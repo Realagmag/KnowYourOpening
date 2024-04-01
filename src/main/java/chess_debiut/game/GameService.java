@@ -20,7 +20,7 @@ public class GameService {
     // get random opening and create a new game
     public Game startNewGame() {
         List<Opening> allOpenings = openingService.getAllOpenings();
-        Opening opening = allOpenings.get(0);
+        Opening opening = allOpenings.get(1);
         Game game = new Game();
         game.setOpening(opening);
         return game;

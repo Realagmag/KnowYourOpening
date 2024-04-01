@@ -44,7 +44,7 @@ public class OpeningController {
                 startingSide);
     }
 
-    @GetMapping("opening/{nameFrag}")
+    @GetMapping("/opening/{nameFrag}")
     public List<Opening> getOpeningsStartingWith(@PathVariable("nameFrag") String nameFrag){
         return openingService.getOpeningsStartingWith(nameFrag);
     }
