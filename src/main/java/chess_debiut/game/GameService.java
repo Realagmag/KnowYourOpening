@@ -28,4 +28,19 @@ public class GameService {
         game.setOpening(opening);
         return game;
     }
+
+    public Game moveResponse(String move) {
+        String moveSequence = game.getOpening().getMoveSequence();
+        String currentSequence = game.getSequence();
+        String nextMoves = moveSequence.substring(currentSequence.length());
+        game.setSequence(currentSequence + move);
+        game.setMoveNumber(game.getMoveNumber()+1);
+        if(!nextMoves.startsWith(move)){
+            game.PlayerLoses();}
+        else if (game.getSequence().equals(game.getOpening().getMoveSequence())) {
+            game.PlayerWins();
+        }
+        game.updatePositions();
+        return game;
+    }
 }

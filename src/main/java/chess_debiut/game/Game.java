@@ -2,6 +2,7 @@ package chess_debiut.game;
 
 import chess_debiut.opening.Opening;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -118,5 +119,20 @@ public class Game {
 
     public void setPieces(List<Piece> pieces) {
         this.pieces = pieces;
+    }
+
+    public void PlayerLoses() {
+        this.opening.setIncorrect(this.opening.getIncorrect()+1);
+        this.opening.setLastTrained(LocalDate.now());
+        this.setWinner("Computer");
+    }
+
+    public void PlayerWins() {
+        this.opening.setCorrect(this.opening.getCorrect()+1);
+        this.opening.setLastTrained(LocalDate.now());
+        this.setWinner("Player");
+    }
+
+    public void updatePositions() { // TO DO
     }
 }
