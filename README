@@ -1,0 +1,67 @@
+Przykłady użycia:
+GET http://localhost:8080/opening
+[
+  {
+    "id": 2,
+    "name": "hahaha",
+    "moveSequence": "e4e5Nf3Nc6Bc4",
+    "description": "cotojest",
+    "startingSide": "black",
+    "correct": null,
+    "incorrect": null,
+    "lastTrained": null,
+    "creationDate": null
+  },
+  {
+    "id": 3,
+    "name": "Queens gambit",
+    "moveSequence": "d4d5c4",
+    "description": "Queens gambit is from tv show",
+    "startingSide": "White",
+    "correct": 5,
+    "incorrect": 2,
+    "lastTrained": "2024-03-30",
+    "creationDate": "2024-01-23"
+  }
+]
+
+GET http://localhost:8080/game/new
+{
+  "opening": {
+    "id": 3,
+    "name": "Queens gambit",
+    "moveSequence": "d4d5c4",
+    "description": "Queens gambit is from tv show",
+    "startingSide": "White",
+    "correct": 5,
+    "incorrect": 2,
+    "lastTrained": "2024-03-30",
+    "creationDate": "2024-01-23"
+  },
+  "onMove": "White",
+  "moveNumber": 1,
+  "sequence": "",
+  "check": false,
+  "checkmate": false,
+  "winner": null,
+  "pieces": [
+    {
+      "type": "pawn",
+      "position": "a2",
+      "color": "white",
+      "possibleMoves": [
+        "a3",
+        "a4"
+      ]
+    },
+    {
+      "type": "pawn",
+      "position": "b2",
+      "color": "white",
+      "possibleMoves": [
+        "b3",
+        "b4"
+      ]
+    }
+  ]
+}
