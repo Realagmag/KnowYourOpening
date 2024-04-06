@@ -18,6 +18,12 @@ public class Piece {
         this.possibleMoves = possibleMoves;
     }
 
+    public Piece(String type, String position, String color) {
+        this.type = type;
+        this.position = position;
+        this.color = color;
+    }
+
     public String getType() {
         return type;
     }

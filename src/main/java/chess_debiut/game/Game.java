@@ -16,7 +16,7 @@ public class Game {
     private String winner;
     private List<Piece> pieces;
 
-    // create all picies on their positions and set attributes
+    // create all pieces on their positions and set attributes
     public Game() {
         this.onMove = "White";
         this.moveNumber = 1L;
@@ -24,18 +24,7 @@ public class Game {
         this.check = false;
         this.checkmate = false;
         this.winner = null;
-        this.pieces = new ArrayList<>();
-        List<String> possibleMoves1P = new ArrayList<>();
-        possibleMoves1P.add("a3");
-        possibleMoves1P.add("a4");
-        Piece firstPawn= new Piece("pawn", "a2", "white", possibleMoves1P);
-        this.pieces.add(firstPawn);
-        List<String> possibleMoves2P = new ArrayList<>();
-        possibleMoves2P.add("b3");
-        possibleMoves2P.add("b4");
-        Piece secondPawn= new Piece("pawn", "b2", "white", possibleMoves2P);
-        this.pieces.add(secondPawn);
-
+        this.pieces = PositionGenerator.startingPosition();
 
     }
 

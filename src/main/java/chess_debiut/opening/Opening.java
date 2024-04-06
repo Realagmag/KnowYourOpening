@@ -2,11 +2,13 @@ package chess_debiut.opening;
 
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.time.LocalDate;
 
 @Entity
 @Table
+@Data
 public class Opening {
     @Id
     @SequenceGenerator(
@@ -66,78 +68,6 @@ public class Opening {
         this.correct = correct;
         this.incorrect = incorrect;
         this.lastTrained = lastTrained;
-        this.creationDate = creationDate;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getMoveSequence() {
-        return moveSequence;
-    }
-
-    public void setMoveSequence(String moveSequence) {
-        this.moveSequence = moveSequence;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getStartingSide() {
-        return startingSide;
-    }
-
-    public void setStartingSide(String startingSide) {
-        this.startingSide = startingSide;
-    }
-
-    public Long getCorrect() {
-        return correct;
-    }
-
-    public void setCorrect(Long correct) {
-        this.correct = correct;
-    }
-
-    public Long getIncorrect() {
-        return incorrect;
-    }
-
-    public void setIncorrect(Long incorrect) {
-        this.incorrect = incorrect;
-    }
-
-    public LocalDate getLastTrained() {
-        return lastTrained;
-    }
-
-    public void setLastTrained(LocalDate lastTrained) {
-        this.lastTrained = lastTrained;
-    }
-
-    public LocalDate getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(LocalDate creationDate) {
         this.creationDate = creationDate;
     }
 }

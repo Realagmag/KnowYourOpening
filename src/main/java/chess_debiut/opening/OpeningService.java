@@ -56,6 +56,7 @@ public class OpeningService {
         if (startingSide != null && !startingSide.isEmpty() && !Objects.equals(opening.getStartingSide(), startingSide)) {
             opening.setStartingSide(startingSide);
         }
+
     }
 
     public List<Opening> getOpeningsStartingWith(String nameFrag) {
