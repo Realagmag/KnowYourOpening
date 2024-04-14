@@ -44,40 +44,34 @@ public class PositionGenerator {
     }
 
 
-    private static void calculatePossibleMoves(List<Piece> pieces) {
+    public static void calculatePossibleMoves(List<Piece> pieces) {
         List<String> occupiedPositions = new ArrayList<>();
         for (Piece piece : pieces){
             occupiedPositions.add(piece.getPosition());
         }
-        List<String> attacked_squares = new ArrayList<>();
         for (Piece piece : pieces){
             List<String> possibleMoves = new ArrayList<>();
-            boolean is_checked = false;
-            attacked_squares = attackedSquares(pieces, piece.getColor(), occupiedPositions);
-            is_checked = isChecked(pieces, piece.getColor(), attacked_squares);
-            if (is_checked) {
-                List<String> moves= new ArrayList<>();
-                moves = getPossilbleMovesWithoutCheck(pieces, piece, attacked_squares);
-                int index = getPieceIndex(pieces, piece.getPosition(), piece.getColor(), piece.getType());
-                for (String move : moves) {
-                    List<Piece> possible_list_of_pieces = new ArrayList<>(pieces);
-                    Piece new_piece = new Piece(piece.getType(), move, piece.getColor());
-                    possible_list_of_pieces.remove(index);
-                    possible_list_of_pieces.add(index, new_piece);
-                    List<String> possibleoccupiedPositions = new ArrayList<>();
-                    for (Piece p : possible_list_of_pieces){
-                        possibleoccupiedPositions.add(p.getPosition());
-                    }
-                    List<String> attacked_positions= new ArrayList<>();
-                    attacked_positions = attackedSquares(pieces, piece.getColor(), possibleoccupiedPositions);
-                    if (!(isChecked(possible_list_of_pieces, piece.getColor(), attacked_positions))) {
-                        possibleMoves.add(move);
-                    }
+            List<String> moves= new ArrayList<>();
+            moves = getPossilbleMovesWithoutCheck(pieces, piece, occupiedPositions);
+            int index = getPieceIndex(pieces, piece.getPosition(), piece.getColor(), piece.getType());
+            for (String move : moves) {
+                List<Piece> possible_list_of_pieces = new ArrayList<>(pieces);
+                Piece new_piece = new Piece(piece.getType(), move, piece.getColor());
+                possible_list_of_pieces.remove(index);
+                possible_list_of_pieces.add(index, new_piece);
+                List<String> possibleoccupiedPositions = new ArrayList<>();
+                for (Piece p : possible_list_of_pieces){
+                    possibleoccupiedPositions.add(p.getPosition());
                 }
-            } else {
-                possibleMoves = getPossilbleMovesWithoutCheck(pieces, piece, occupiedPositions);
+                List<String> attacked_positions= new ArrayList<>();
+                attacked_positions = attackedSquares(possible_list_of_pieces, piece.getColor(), possibleoccupiedPositions);
+                if (!(isChecked(possible_list_of_pieces, piece.getColor(), attacked_positions))) {
+                    possibleMoves.add(move);
+                }
             }
-            piece.setPossibleMoves(possibleMoves);
+            if (!(possibleMoves.isEmpty())) {
+                piece.setPossibleMoves(possibleMoves);
+            }
         }
     }
 
@@ -180,14 +174,16 @@ public class PositionGenerator {
         int move = 1;
         while (canGoFurther && isValidPosition(checked_column.charAt(0), checked_row)) {
             checked_position = checked_column + String.valueOf(checked_row);
-            if (!(occupied_positions.contains(checked_position))){
-                possible_moves.add(checked_position);
-            } else {
-                Piece attacked_piece = getPieceAtPosition(pieces, checked_position);
-                if (!(attacked_piece.getColor().equals(piece.getColor()))){
+            if (!(possible_moves.contains(checked_position))) {
+                if (!(occupied_positions.contains(checked_position))){
                     possible_moves.add(checked_position);
-                }
-                canGoFurther = false;
+                } else {
+                    Piece attacked_piece = getPieceAtPosition(pieces, checked_position);
+                    if ((!(attacked_piece.getColor().equals(piece.getColor())))){
+                        possible_moves.add(checked_position);
+                    }
+                    canGoFurther = false;       
+                }        
             }
             move += 1;
             if (move > max_move) {
@@ -217,8 +213,8 @@ public class PositionGenerator {
         for (Piece piece : pieces) {
             if (piece.getPosition().equals(position) && piece.getColor().equals(color) && piece.getType().equals(type)) {
                 index = i;
-                i += 1;
             }
+            i += 1;
         }
         return index;
     }
@@ -285,7 +281,7 @@ public class PositionGenerator {
                     checkDirections(piece, pieces, occupiedPositions, attacked_squares, column, row, -2, -1, 1);
                     checkDirections(piece, pieces, occupiedPositions, attacked_squares, column, row, 1, -2, 1);
                     checkDirections(piece, pieces, occupiedPositions, attacked_squares, column, row, -1, -2, 1);
-
+                
                 }
             }
         }
@@ -295,7 +291,9 @@ public class PositionGenerator {
     private static boolean isChecked(List<Piece> pieces, String color, List<String> attacked_squares) {
         boolean is_checked = false;
         for (Piece piece : pieces) {
-            is_checked = (piece.getType().equals("king") && piece.getColor().equals(color) && attacked_squares.contains(piece.getPosition()));
+            if (piece.getType().equals("king") && piece.getColor().equals(color) && attacked_squares.contains(piece.getPosition())) {
+                is_checked = true;
+            }           
         }
         return is_checked;
     }
