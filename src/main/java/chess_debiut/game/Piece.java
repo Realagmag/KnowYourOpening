@@ -7,6 +7,8 @@ public class Piece {
     private String position;
     private String color;
     private List<String> possibleMoves;
+    private int timesMoved;
+    private boolean movedLast;
 
     public Piece() {
     }
@@ -16,12 +18,16 @@ public class Piece {
         this.position = position;
         this.color = color;
         this.possibleMoves = possibleMoves;
+        this.timesMoved = 0;
+        this.movedLast = false;
     }
 
     public Piece(String type, String position, String color) {
         this.type = type;
         this.position = position;
         this.color = color;
+        this.timesMoved = 0;
+        this.movedLast = false;
     }
 
     public String getType() {
@@ -54,5 +60,30 @@ public class Piece {
 
     public void setPossibleMoves(List<String> possibleMoves) {
         this.possibleMoves = possibleMoves;
+    }
+
+    public int getTimesMoved() {
+        return timesMoved;
+    }
+
+    public void setTimesMoved(int timesMoved) {
+        this.timesMoved = timesMoved;
+    }
+
+    public void pieceMoved() {
+        this.timesMoved += 1;
+        this.movedLast = true;
+    }
+
+    public void anotherPieceMoved() {
+        this.movedLast = false;
+    }
+
+    public boolean getMovedLast() {
+        return movedLast;
+    }
+
+    public void setMovedLast(boolean movedLast) {
+        this.movedLast = movedLast;
     }
 }

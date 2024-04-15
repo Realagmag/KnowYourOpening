@@ -59,12 +59,8 @@ public class PositionGenerator {
                 Piece new_piece = new Piece(piece.getType(), move, piece.getColor());
                 possible_list_of_pieces.remove(index);
                 possible_list_of_pieces.add(index, new_piece);
-                List<String> possibleoccupiedPositions = new ArrayList<>();
-                for (Piece p : possible_list_of_pieces){
-                    possibleoccupiedPositions.add(p.getPosition());
-                }
                 List<String> attacked_positions= new ArrayList<>();
-                attacked_positions = attackedSquares(possible_list_of_pieces, piece.getColor(), possibleoccupiedPositions);
+                attacked_positions = attackedSquares(possible_list_of_pieces, piece.getColor());
                 if (!(isChecked(possible_list_of_pieces, piece.getColor(), attacked_positions))) {
                     possibleMoves.add(move);
                 }
@@ -98,8 +94,11 @@ public class PositionGenerator {
             }
             if (column != "a") {
                 String checkedPositionAttackLeft = Character.toString(column.charAt(0) - 1) + String.valueOf(row + color_multiplayer);
+                String en_passant_pawn_position = Character.toString(column.charAt(0) - 1) + row;
+                int en_passant_row = (9 + color_multiplayer)/2;
+                String en_passant_pawn_position_absolute = Character.toString(column.charAt(0) - 1) + String.valueOf(en_passant_row);
                 for (Piece piece2 : pieces) {
-                    if (piece2.getPosition().equals(checkedPositionAttackLeft) && !(piece2.getColor().equals(piece.getColor()))) {
+                    if (((piece2.getPosition().equals(checkedPositionAttackLeft)) || ((piece2.getPosition().equals(en_passant_pawn_position)) && (piece2.getMovedLast()) && (piece2.getTimesMoved()==1) && (piece2.getPosition().equals(en_passant_pawn_position_absolute))))&& (!(piece2.getColor().equals(piece.getColor())))) {
                         possibleMoves.add(checkedPositionAttackLeft);
                         break;
                     }
@@ -107,8 +106,11 @@ public class PositionGenerator {
             }
             if (column != "h") {
                 String checkedPositionAttackRight = Character.toString(column.charAt(0) + 1) + String.valueOf(row + color_multiplayer);
+                String en_passant_pawn_position = Character.toString(column.charAt(0) + 1) + row;
+                int en_passant_row = (9 + color_multiplayer)/2;
+                String en_passant_pawn_position_absolute = Character.toString(column.charAt(0) - 1) + String.valueOf(en_passant_row);
                 for (Piece piece2 : pieces) {
-                    if (piece2.getPosition().equals(checkedPositionAttackRight) && !(piece2.getColor().equals(piece.getColor()))) {
+                    if (((piece2.getPosition().equals(checkedPositionAttackRight)) || ((piece2.getPosition().equals(en_passant_pawn_position)) && (piece2.getMovedLast()) && (piece2.getTimesMoved()==1) && (piece2.getPosition().equals(en_passant_pawn_position_absolute))))&& (!(piece2.getColor().equals(piece.getColor())))) {
                         possibleMoves.add(checkedPositionAttackRight);
                         break;
                     }
@@ -151,6 +153,21 @@ public class PositionGenerator {
             checkDirections(piece, pieces, occupied_positions, possibleMoves, column, row, 1, -1, 1);
             checkDirections(piece, pieces, occupied_positions, possibleMoves, column, row, -1, 1, 1);
             checkDirections(piece, pieces, occupied_positions, possibleMoves, column, row, -1, -1, 1);
+            if (piece.getTimesMoved()==0) {
+                String castle_row = "0";
+                if (piece.getColor().equals("White")) {
+                    castle_row = "1";
+                } else if (piece.getColor().equals("Black")) {
+                    castle_row = "8";
+                }
+                if (isEligibleForShortCastle(pieces, piece, castle_row)) {
+                    possibleMoves.add("g" + castle_row);
+                }
+                if (isEligibleForLongCastle(pieces, piece, castle_row)) {
+                    possibleMoves.add("c" + castle_row);
+                }
+            }
+            
         }
 
         if (piece.getType().equals("knight")) {
@@ -219,8 +236,12 @@ public class PositionGenerator {
         return index;
     }
 
-    private static List<String> attackedSquares(List<Piece> pieces, String color, List<String> occupiedPositions) {
+    private static List<String> attackedSquares(List<Piece> pieces, String color) {
+        List<String> occupiedPositions = new ArrayList<>();
         List<String> attacked_squares = new ArrayList<>();
+        for (Piece piece : pieces) {
+            occupiedPositions.add(piece.getPosition());
+        }
         for (Piece piece : pieces) {
             String column = piece.getPosition().substring(0,1);
             int row = Integer.parseInt(piece.getPosition().substring(1));
@@ -296,5 +317,75 @@ public class PositionGenerator {
             }           
         }
         return is_checked;
+    }
+
+    private static boolean isPieceAtPosition(List<Piece> pieces, String position) {
+        boolean is_piece_at_position = false;
+        for (Piece piece : pieces) {
+            if (piece.getPosition().equals(position)) {
+                is_piece_at_position = true;
+            }
+        }
+        return is_piece_at_position;
+    }
+
+    private static boolean isEligibleForLongCastle(List<Piece> pieces, Piece king, String castle_row) {
+        boolean is_eligible = false;
+        if (isPieceAtPosition(pieces, "a" + castle_row)) {
+            Piece rook = getPieceAtPosition(pieces, "a" + castle_row);
+            if ((rook.getTimesMoved()==0) && (rook.getType().equals("rook")) && (rook.getColor().equals(king.getColor()))) {
+                if ((!(isPieceAtPosition(pieces, "b" + castle_row)))&&(!(isPieceAtPosition(pieces, "c" + castle_row))) && (!(isPieceAtPosition(pieces, "d" + castle_row)))) {
+                    List<String> attacked_positions = new ArrayList<>();
+                    List<String> attacked_positions_after_castle1 = new ArrayList<>();
+                    List<String> attacked_positions_after_castle2 = new ArrayList<>();
+                    attacked_positions = attackedSquares(pieces, king.getColor());
+                    Piece new_piece1 = new Piece(king.getType(), "c" + castle_row, king.getColor());
+                    Piece new_piece2 = new Piece(king.getType(), "d" + castle_row, king.getColor());
+                    int index = getPieceIndex(pieces, king.getPosition(), king.getColor(), king.getType());
+                    List<Piece> possible_list_of_pieces1 = new ArrayList<>(pieces);
+                    List<Piece> possible_list_of_pieces2 = new ArrayList<>(pieces);
+                    possible_list_of_pieces1.remove(index);
+                    possible_list_of_pieces1.add(index, new_piece1);
+                    possible_list_of_pieces2.remove(index);
+                    possible_list_of_pieces2.add(index, new_piece2);
+                    attacked_positions_after_castle1 = attackedSquares(possible_list_of_pieces1, king.getColor());
+                    attacked_positions_after_castle2 = attackedSquares(possible_list_of_pieces2, king.getColor());
+                    if ((!(isChecked(pieces, king.getColor(), attacked_positions))) && (!(isChecked(possible_list_of_pieces1, king.getColor(), attacked_positions_after_castle1))) && (!(isChecked(possible_list_of_pieces2, king.getColor(), attacked_positions_after_castle2)))) {
+                        is_eligible = true;
+                    }
+                }
+            }
+        }
+        return is_eligible;
+    }
+
+    private static boolean isEligibleForShortCastle(List<Piece> pieces, Piece king, String castle_row) {
+        boolean is_eligible = false;
+        if (isPieceAtPosition(pieces, "h" + castle_row)) {
+            Piece rook = getPieceAtPosition(pieces, "h" + castle_row);
+            if ((rook.getTimesMoved()==0) && (rook.getType().equals("rook")) && (rook.getColor().equals(king.getColor()))) {
+                if ((!(isPieceAtPosition(pieces, "f" + castle_row)))&&(!(isPieceAtPosition(pieces, "g" + castle_row)))) {
+                    List<String> attacked_positions = new ArrayList<>();
+                    List<String> attacked_positions_after_castle1 = new ArrayList<>();
+                    List<String> attacked_positions_after_castle2 = new ArrayList<>();
+                    attacked_positions = attackedSquares(pieces, king.getColor());
+                    Piece new_piece1 = new Piece(king.getType(), "f" + castle_row, king.getColor());
+                    Piece new_piece2 = new Piece(king.getType(), "g" + castle_row, king.getColor());
+                    int index = getPieceIndex(pieces, king.getPosition(), king.getColor(), king.getType());
+                    List<Piece> possible_list_of_pieces1 = new ArrayList<>(pieces);
+                    List<Piece> possible_list_of_pieces2 = new ArrayList<>(pieces);
+                    possible_list_of_pieces1.remove(index);
+                    possible_list_of_pieces1.add(index, new_piece1);
+                    possible_list_of_pieces2.remove(index);
+                    possible_list_of_pieces2.add(index, new_piece2);
+                    attacked_positions_after_castle1 = attackedSquares(possible_list_of_pieces1, king.getColor());
+                    attacked_positions_after_castle2 = attackedSquares(possible_list_of_pieces2, king.getColor());
+                    if ((!(isChecked(pieces, king.getColor(), attacked_positions))) && (!(isChecked(possible_list_of_pieces1, king.getColor(), attacked_positions_after_castle1))) && (!(isChecked(possible_list_of_pieces2, king.getColor(), attacked_positions_after_castle2)))) {
+                        is_eligible = true;
+                    }
+                }
+            }
+        }
+        return is_eligible;
     }
 }
