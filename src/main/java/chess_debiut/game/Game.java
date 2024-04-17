@@ -123,15 +123,22 @@ public class Game {
     }
 
     public void updatePositions(String move) {
-        String fromWhere = move.substring(0, 3);
-        String toWhere = move.substring(4, 6);
+        String fromWhere = move.substring(0, 2);
+        String toWhere = move.substring(3, 5);
+        int index = 0;
+        int index_to_remove= -1;
         for (Piece piece : pieces) {
+            piece.setMovedLast(false);
             if (piece.getPosition().equals(toWhere)){
-                this.pieces.remove(piece);
+                index_to_remove = index;
             }
             if (piece.getPosition().equals(fromWhere)){
-                piece.setPosition(toWhere);
+                piece.pieceMoved(toWhere);
             }
+            index = index + 1;
+        }
+        if (index_to_remove > -1){
+            this.pieces.remove(index_to_remove);
         }
         PositionGenerator.calculatePossibleMoves(this.pieces);
     }

@@ -70,9 +70,10 @@ public class Piece {
         this.timesMoved = timesMoved;
     }
 
-    public void pieceMoved() {
+    public void pieceMoved(String toWhere) {
         this.timesMoved += 1;
         this.movedLast = true;
+        this.setPosition(toWhere);
     }
 
     public void anotherPieceMoved() {
