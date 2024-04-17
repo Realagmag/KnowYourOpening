@@ -34,13 +34,13 @@ public class GameService {
         String currentSequence = game.getSequence();
         String nextMoves = moveSequence.substring(currentSequence.length());
         game.setSequence(currentSequence + move);
-        game.setMoveNumber(game.getMoveNumber()+1);
+        game.setMoveNumber(game.getMoveNumber()+2);
         if(!nextMoves.startsWith(move)){
             game.PlayerLoses();}
         else if (game.getSequence().equals(game.getOpening().getMoveSequence())) {
             game.PlayerWins();
         }
-        game.updatePositions();
+        game.updatePositions(move);
         return game;
     }
 }

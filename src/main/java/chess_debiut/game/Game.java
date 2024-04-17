@@ -122,6 +122,17 @@ public class Game {
         this.setWinner("Player");
     }
 
-    public void updatePositions() { // TO DO
+    public void updatePositions(String move) {
+        String fromWhere = move.substring(0, 3);
+        String toWhere = move.substring(4, 6);
+        for (Piece piece : pieces) {
+            if (piece.getPosition().equals(toWhere)){
+                this.pieces.remove(piece);
+            }
+            if (piece.getPosition().equals(fromWhere)){
+                piece.setPosition(toWhere);
+            }
+        }
+        PositionGenerator.calculatePossibleMoves(this.pieces);
     }
 }
