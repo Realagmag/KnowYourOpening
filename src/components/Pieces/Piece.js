@@ -1,6 +1,6 @@
 import "./Pieces.css";
 
-const Piece = ({ rank, file, piece }) => {
+const Piece = ({ rank, file, piece, isDragging }) => {
   const onDragStart = (e) => {
     e.dataTransfer.effectAllowed = "move";
     e.dataTransfer.setData("text/plain", `${piece},${rank},${file}`);
