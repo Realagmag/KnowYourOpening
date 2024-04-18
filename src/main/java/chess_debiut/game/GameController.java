@@ -1,5 +1,6 @@
 package chess_debiut.game;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +14,7 @@ public class GameController {
     @Autowired
     public GameController(GameService gameService) { this.gameService = gameService; }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/game/new")
     public Game startNewGame(){
 
