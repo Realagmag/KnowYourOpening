@@ -1,6 +1,6 @@
 import { CreatePosition } from "./helper";
 
 export const initGameState = {
-  position: [CreatePosition()],
+  position: [await CreatePosition()],
   turn: "w",
 };

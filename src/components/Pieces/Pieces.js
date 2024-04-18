@@ -11,6 +11,7 @@ const Pieces = () => {
   const { appState, dispatch } = useAppContext();
 
   const currentPosition = appState.position[appState.position.length - 1];
+  console.log(currentPosition);
 
   const calculateCoords = (e) => {
     const { top, left, width } = ref.current.getBoundingClientRect();
@@ -35,18 +36,19 @@ const Pieces = () => {
 
   return (
     <div ref={ref} onDrop={onDrop} onDragOver={onDragOver} className="pieces">
-      {currentPosition.map((r, rank) =>
-        r.map((f, file) =>
-          currentPosition[rank][file] ? (
-            <Piece
-              key={rank + "-" + file}
-              rank={rank}
-              file={file}
-              piece={currentPosition[rank][file]}
-            />
-          ) : null
-        )
-      )}
+      {currentPosition !== undefined &&
+        currentPosition.map((r, rank) =>
+          r.map((f, file) =>
+            currentPosition[rank][file] ? (
+              <Piece
+                key={rank + "-" + file}
+                rank={rank}
+                file={file}
+                piece={currentPosition[rank][file]}
+              />
+            ) : null
+          )
+        )}
     </div>
   );
 };
