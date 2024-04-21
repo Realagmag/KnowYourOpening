@@ -1,53 +1,6 @@
-Przykłady użycia:
-POST http://localhost:8080/opening
-Content-Type: application/json
+Po sklonowaniu repozytorium instalacja i uruchomienie aplikacji
+realizowane jest przez wywołanie komendy:
 
-{
-  "name": "Obrona Skandynawska",
-  "startingSide": "White",
-  "moveSequence": "e2-e4d7-d5e4-d5d8-d5",
-  "description": "Skandynaw jest swietny",
-  "correct": 0,
-  "incorrect": 0,
-  "lastTrained": "2024-02-10",
-  "creationDate": "2024-01-01"
-}
+bash script.bash 
 
-GET http://localhost:8080/game/new
-
-PUT http://localhost:8080/game/e2-e4
-Content-Type: application/x-www-form-urlencoded
-
-PUT http://localhost:8080/game/e4-d5
-Content-Type: application/x-www-form-urlencoded
-
-PUT http://localhost:8080/game/b1-c3
-Content-Type: application/x-www-form-urlencoded
-
----------------
-
-GET http://localhost:8080/opening
-[
-  {
-    "id": 2,
-    "name": "hahaha",
-    "moveSequence": "a2-a4e7-e5b1-c3",
-    "description": "cotojest",
-    "startingSide": "black",
-    "correct": null,
-    "incorrect": null,
-    "lastTrained": null,
-    "creationDate": null
-  },
-  {
-    "id": 3,
-    "name": "Queens gambit",
-    "moveSequence": "d2-d4d7-d5c2-c4",
-    "description": "Queens gambit is from tv show",
-    "startingSide": "White",
-    "correct": 5,
-    "incorrect": 2,
-    "lastTrained": "2024-03-30",
-    "creationDate": "2024-01-23"
-  }
-]
+znajdując się w folderze PAP_Z11_SZACHY.
