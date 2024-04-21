@@ -16,7 +16,12 @@ function processPiecesData(data) {
     const rank = parseInt(piece.position.charAt(1)) - 1;
 
     chessboard[rank][file] =
-      piece.color.charAt(0).toLowerCase() + piece.type.charAt(0).toUpperCase();
+      piece.color.charAt(0).toLowerCase() +
+      (piece.type.charAt(0).toLowerCase() === "k"
+        ? piece.type.charAt(1) === "i"
+          ? "K"
+          : "N"
+        : piece.type.charAt(0).toUpperCase());
   });
 
   return chessboard;
