@@ -14,17 +14,20 @@ public class OpeningController {
     public OpeningController(OpeningService openingService) {
         this.openingService = openingService;
     }
-
+    
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/opening")
     public List<Opening> getAllOpenings(){
         return openingService.getAllOpenings();
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/opening")
     public void addNewOpening(@RequestBody Opening opening){
         openingService.addNewOpening(opening);
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @DeleteMapping("/opening/{id}")
     public void deleteOpening(@PathVariable("id") Long openingId){
         openingService.deleteOpening(openingId);

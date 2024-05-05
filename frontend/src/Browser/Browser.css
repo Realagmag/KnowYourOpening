@@ -1,0 +1,50 @@
+.Browser {
+  width: 100%;
+  margin-bottom: 1rem;
+  background-color: rgb(59, 24, 1);
+  position: absolute;
+  border-radius: 5px;
+  height: 800px;
+  width: 350px;
+  top: 42.5px;
+  left: 100px;
+  opacity: 0;
+  overflow-y: auto;
+}
+
+.Opening {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fc6500;
+  color: #fff;
+  padding: 0.75rem 1rem;
+  color: rgb(65, 30, 1);
+  margin-bottom: 1rem;
+  max-width: 90%;
+  border-radius: 10px;
+}
+
+.fa-trash {
+  margin-left: 0.75rem;
+}
+
+.Search {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.search-input {
+  outline: none;
+  background: none;
+  border: 1px solid #e5c98a;
+  padding: 0.5rem 1rem;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+  width: 300px;
+  color: #fcce00;
+}
+
+.search-input::placeholder {
+  color: #ffffff4d;
+}
