@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 
 const Browser = () => {
   const [openings, setOpenings] = useState([]);
+  const [searchTerm, setSearchTerm] = useState(""); // Dodane
 
   const handleDelete = async (id) => {
     const filteredOpenings = Object.keys(openings)
@@ -16,6 +17,10 @@ const Browser = () => {
       }, {});
     setOpenings(filteredOpenings);
     await deleteOpening(id);
+  };
+
+  const handleSearch = (searchTerm) => {
+    setSearchTerm(searchTerm);
   };
 
   useEffect(() => {
@@ -30,11 +35,22 @@ const Browser = () => {
     fetchOpenings();
   }, []);
 
+  const filteredOpenings = Object.entries(openings)
+    .filter(
+      ([id, opening]) =>
+        opening.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        id.toLowerCase().includes(searchTerm.toLowerCase()) // Dodane
+    )
+    .reduce((obj, [id, opening]) => {
+      obj[id] = opening;
+      return obj;
+    }, {});
+
   return (
     <form className="Browser">
-      <Search />
-      {openings &&
-        Object.entries(openings)
+      <Search onSearch={handleSearch} />
+      {filteredOpenings &&
+        Object.entries(filteredOpenings)
           .sort(([idA], [idB]) => idA.localeCompare(idB))
           .map(([id, opening]) => (
             <Opening
