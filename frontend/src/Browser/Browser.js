@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react";
 
 const Browser = () => {
   const [openings, setOpenings] = useState([]);
-  const [searchTerm, setSearchTerm] = useState(""); // Dodane
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleDelete = async (id) => {
     const filteredOpenings = Object.keys(openings)
@@ -39,7 +39,7 @@ const Browser = () => {
     .filter(
       ([id, opening]) =>
         opening.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        id.toLowerCase().includes(searchTerm.toLowerCase()) // Dodane
+        id.toLowerCase().includes(searchTerm.toLowerCase())
     )
     .reduce((obj, [id, opening]) => {
       obj[id] = opening;
