@@ -1,7 +1,7 @@
 import "./Browser.css";
 import { useState } from "react";
 
-const Search = ({ onSearch }) => {
+const Search = ({ onSearch, showSearch }) => {
   const [searchInput, setSearchInput] = useState("");
 
   const handleChange = (e) => {
@@ -12,13 +12,15 @@ const Search = ({ onSearch }) => {
 
   return (
     <form className="Search">
-      <input
-        type="text"
-        className="search-input"
-        placeholder="Search here"
-        onChange={handleChange}
-        value={searchInput}
-      />
+      {showSearch && (
+        <input
+          type="text"
+          className="search-input"
+          placeholder="Search here"
+          onChange={handleChange}
+          value={searchInput}
+        />
+      )}
     </form>
   );
 };

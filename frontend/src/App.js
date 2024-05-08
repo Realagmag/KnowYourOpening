@@ -2,7 +2,7 @@ import { useReducer } from "react";
 import "./App.css";
 import Board from "./components/Board/Board";
 import AppContext from "./contexts/Context";
-import BrowseBtn from "./Browser/BrorwserBtn";
+import BrowseBtn from "./Browser/BrowseBtn";
 import { reducer } from "./reducer/reducer";
 import { initGameState } from "./constant";
 import Browser from "./Browser/Browser";

@@ -13,5 +13,33 @@ export async function getOpenings() {
 }
 
 export async function deleteOpening(id) {
-  axios.delete(`http://localhost:8080/opening/${id}`);
+  axios
+    .delete(`http://localhost:8080/opening/${id}`)
+    .then((response) => {
+      console.log(`deleted opening ${id}`);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}
+
+export async function PublishOpening(name, moves, info) {
+  const postData = {
+    name: name,
+    startingSide: "White",
+    moveSequence: moves,
+    description: info,
+  };
+  axios
+    .post("http://localhost:8080/opening", postData, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      console.log("Response:", response.data);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
 }

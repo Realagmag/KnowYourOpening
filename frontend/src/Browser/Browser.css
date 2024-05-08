@@ -40,11 +40,59 @@
   border: 1px solid #e5c98a;
   padding: 0.5rem 1rem;
   margin-top: 1rem;
-  margin-bottom: 2rem;
+  margin-bottom: 0.5rem;
   width: 300px;
   color: #fcce00;
 }
 
 .search-input::placeholder {
   color: #ffffff4d;
+}
+
+.AddBtn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.AddOpening {
+  text-align: center;
+  color: wheat;
+}
+
+.form-group {
+  margin-bottom: 10px;
+}
+
+label {
+  display: block;
+}
+
+input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+button {
+  margin-top: 10px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  background-color: #eb8a0b;
+  color: white;
+  cursor: pointer;
+}
+button:hover {
+  background-color: #520303;
+}
+
+.buttons {
+  margin-top: 10px;
+}
+
+.buttons button {
+  margin-right: 10px;
 }
