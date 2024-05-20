@@ -26,7 +26,7 @@ const Board = () => {
               key={file + "" + rank}
               i={i}
               j={j}
-              className={`${getClassName(9 - i, j)}`}
+              className={`${getClassName(9 - i, j)} square-${String.fromCharCode(96 + Number(file))}${Number(rank)}`}
             ></div>
           ))
         )}

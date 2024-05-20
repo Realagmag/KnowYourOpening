@@ -1,20 +1,21 @@
 import "./Pieces.css";
 import Piece from "./Piece";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { copyPosition } from "../../helper";
 import { useAppContext } from "../../contexts/Context";
 import { makeNewMove } from "../../reducer/actions/move";
-import axios from 'axios';
-
+import axios from "axios";
+import { getLegalMoves } from "./Piece";
+import { getCorrectMove, generateStartingPossibleMoves } from "./PiecesHelper";
+import { faThermometerThreeQuarters } from "@fortawesome/free-solid-svg-icons";
 
 const Pieces = () => {
   const ref = useRef();
-
   const { appState, dispatch } = useAppContext();
-
+  const [isDragging, setIsDragging] = useState(false);
+  const [responseData, setResponseData] = useState(null);
+  const [isSequenceEnded, setIsSequenceEnded] = useState(false);
   const currentPosition = appState.position[appState.position.length - 1];
-  console.log(currentPosition);
-
   /**
    * Converts rank and file to coordinates of board array.
    *
@@ -23,10 +24,10 @@ const Pieces = () => {
    * @returns {Object} - The coordinates object with x and y properties.
    */
   function convertRankFileToCoords(rank, file) {
-    const x = 8 - Number(rank);
-    const y = 8 - Number(file);
+    const x = Number(rank);
+    const y = Number(file);
     return { x, y };
-}
+  }
 
   const calculateCoords = (e) => {
     const { top, left, width } = ref.current.getBoundingClientRect();
@@ -37,42 +38,106 @@ const Pieces = () => {
     return { x, y };
   };
 
-  const onDrop = (e) => {
+  const makeComputerMove = async (responseData, position) => {
+    let newPos = JSON.parse(JSON.stringify(position));
+
+    const computerMove = await getCorrectMove(responseData, false);
+    console.log("The computer move isaaa");
+    console.log(computerMove);
+
+    const from = computerMove[0];
+    const to = computerMove[1];
+
+    const rank = from.charCodeAt(0) - 97;
+    const file = from[1] - 1;
+
+    const p = newPos[file][rank];
+
+    const x = to.charCodeAt(0) - 97;
+    const y = to[1] - 1;
+
+    newPos[file][rank] = "";
+    newPos[y][x] = p;
+
+    return newPos;
+  };
+
+  const makeMove = async (e, position) => {
     e.preventDefault();
-
-    const newPosition = JSON.parse(JSON.stringify(currentPosition));
-    const { x, y } = calculateCoords(e);
-
     const [p, rank, file] = e.dataTransfer.getData("text").split(",");
-
-    const { x: newRank, y: newFile } = convertRankFileToCoords(rank, file);
-
-    console.log(newRank, newFile);
-    console.log(x, y);
-    newPosition[newFile][newRank] = "";
-    newPosition[x][y] = p;
-    console.log(currentPosition);
-    console.log(newPosition);
-
+    const { x, y } = calculateCoords(e);
     const from = `${String.fromCharCode(97 + Number(file))}${Number(rank) + 1}`;
     const to = `${String.fromCharCode(97 + y)}${x + 1}`;
-    console.log(from, to);
 
-    axios.put(`http://localhost:8080/game/${from}-${to}`)
+    const legalMoves = getLegalMoves(rank, file, responseData);
+    console.log("Legal moves are");
+    console.log(legalMoves);
+    console.log(responseData)
+    const correctMove = await getCorrectMove(responseData);
+    console.log("The correct move is");
+    console.log(correctMove);
 
-    .then(response => {
-      if (response.data.winner == null || response.data.winner === "Computer") {
-        console.log(response.data);
+    console.log("The correct move is");
+    console.log(correctMove);
 
-        if (newPosition === currentPosition) return;
-        dispatch({ type: 'NEW_MOVE', payload: { newPosition } });
-      } else {
-        alert(response.data.message);
-      }
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-    });
+    if (!validateMove(from, to, correctMove)) {
+      // alert("Invalid move");
+      // dispatch({ type: "NEW_MOVE", payload: { currentPosition } });
+      return;
+    }
+
+    position[rank][file] = "";
+    position[x][y] = p;
+    return { newPosition: position, from, to };
+  };
+
+  const validateMove = (from, to, correctMove) => {
+    if (from === correctMove[0] && to === correctMove[1]) {
+      return true;
+    }
+    return false;
+  };
+
+  const onDrop = async (e) => {
+    e.preventDefault();
+    let newPosition = JSON.parse(JSON.stringify(currentPosition));
+    let from = "";
+    let to = "";
+
+
+    const result = await makeMove(e, newPosition);
+    if (!result) {
+      alert("Invalid move");
+      return;
+    }
+
+
+
+    ({ newPosition, from, to } = result);
+
+    axios
+      .put(`http://localhost:8080/game/${from}-${to}`)
+      .then(async (response) => {
+        if (
+          response.data.winner == null ||
+          response.data.winner === "Computer"
+        ) {
+          console.log("The response data is");
+          console.log(response.data);
+          setResponseData(response.data);
+          
+          console.log(response.data.winner)
+          if (response.data.winner) {
+            console.log("THE END");
+            setIsSequenceEnded(true);
+
+          }
+
+
+          const newPos = await makeComputerMove(response.data, newPosition);
+          dispatch({ type: "NEW_MOVE", payload: { newPosition: newPos } });
+        }
+      });
   };
 
   const onDragOver = (e) => e.preventDefault();
@@ -88,6 +153,7 @@ const Pieces = () => {
                 rank={rank}
                 file={file}
                 piece={currentPosition[rank][file]}
+                gameState={responseData}
               />
             ) : null
           )

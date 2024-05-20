@@ -5,6 +5,7 @@ export const getCharacter = (file) => String.fromCharCode(file + 96);
 export async function CreatePosition() {
   const { data } = await axios.get("http://localhost:8080/game/new");
   const pieces = processPiecesData(data.pieces);
+
   return pieces;
 }
 
