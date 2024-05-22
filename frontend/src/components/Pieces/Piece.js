@@ -1,6 +1,10 @@
 import "./Pieces.css";
 import { generatePossibleMoves } from "./PiecesHelper";
 
+const pieceColorMap = {
+  'w': 'White',
+  'b': 'Black',
+};
 
 export const getLegalMoves = (rank, file, gameState) => {
   const from = `${String.fromCharCode(97 + Number(file))}${Number(rank) + 1}`;
@@ -13,6 +17,19 @@ export const getLegalMoves = (rank, file, gameState) => {
     return pieceData;
   }
 };
+
+const isDraggable = (piece, gameState) => {
+  let pieceToMove = pieceColorMap[piece[0]];
+  if (!gameState) {
+    if (pieceToMove === "White") {
+      return true;
+    }
+    return false;
+  }
+
+  return gameState.onMove === pieceColorMap[piece[0]];
+
+}
 
 const Piece = ({ rank, file, piece, gameState}) => {
   const onDragStart = (e) => {
@@ -37,6 +54,10 @@ const Piece = ({ rank, file, piece, gameState}) => {
 
   const onDragEnd = (e) => {
     const highlightedSquares = document.querySelectorAll('.highlight');
+    console.log("Game state is")
+    console.log(gameState)
+    console.log("Highlighted squares are")
+    console.log(piece)
     highlightedSquares.forEach(square => {
       square.classList.remove('highlight');
     });
@@ -45,9 +66,9 @@ const Piece = ({ rank, file, piece, gameState}) => {
   return (
     <div
       className={`piece ${piece} p-${file}${rank}`}
-      draggable={true}
-      onDragStart={onDragStart}
-      onDragEnd={onDragEnd}
+      draggable={isDraggable(piece, gameState)}
+      onDragStart={isDraggable(piece, gameState) ? onDragStart : null}
+      onDragEnd={isDraggable(piece, gameState) ? onDragEnd : null}
     />
   );
 };

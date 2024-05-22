@@ -8,6 +8,8 @@ import axios from "axios";
 import { getLegalMoves } from "./Piece";
 import { getCorrectMove, generateStartingPossibleMoves } from "./PiecesHelper";
 import { faThermometerThreeQuarters } from "@fortawesome/free-solid-svg-icons";
+import { useContext } from "react";
+import { NotificationContext } from "../../contexts/NotificationContext"; // adjust the path as needed
 
 const Pieces = () => {
   const ref = useRef();
@@ -15,6 +17,8 @@ const Pieces = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [responseData, setResponseData] = useState(null);
   const [isSequenceEnded, setIsSequenceEnded] = useState(false);
+  const { setNotification } = useContext(NotificationContext);
+
   const currentPosition = appState.position[appState.position.length - 1];
   /**
    * Converts rank and file to coordinates of board array.
@@ -72,7 +76,7 @@ const Pieces = () => {
     const legalMoves = getLegalMoves(rank, file, responseData);
     console.log("Legal moves are");
     console.log(legalMoves);
-    console.log(responseData)
+    console.log(responseData);
     const correctMove = await getCorrectMove(responseData);
     console.log("The correct move is");
     console.log(correctMove);
@@ -81,8 +85,6 @@ const Pieces = () => {
     console.log(correctMove);
 
     if (!validateMove(from, to, correctMove)) {
-      // alert("Invalid move");
-      // dispatch({ type: "NEW_MOVE", payload: { currentPosition } });
       return;
     }
 
@@ -104,14 +106,13 @@ const Pieces = () => {
     let from = "";
     let to = "";
 
-
     const result = await makeMove(e, newPosition);
     if (!result) {
-      alert("Invalid move");
+      setNotification({ type: "error", message: "Incorrect move" });
       return;
+    } else {
+      setNotification({ type: "success", message: "Correct move" });
     }
-
-
 
     ({ newPosition, from, to } = result);
 
@@ -125,14 +126,12 @@ const Pieces = () => {
           console.log("The response data is");
           console.log(response.data);
           setResponseData(response.data);
-          
-          console.log(response.data.winner)
+
+          console.log(response.data.winner);
           if (response.data.winner) {
             console.log("THE END");
             setIsSequenceEnded(true);
-
           }
-
 
           const newPos = await makeComputerMove(response.data, newPosition);
           dispatch({ type: "NEW_MOVE", payload: { newPosition: newPos } });
