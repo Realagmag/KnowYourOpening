@@ -7,6 +7,7 @@ export async function getOpenings() {
     openings[el.id] = {
       name: el.name,
       description: el.description,
+      moves: el.moveSequence,
     };
   });
   return openings;

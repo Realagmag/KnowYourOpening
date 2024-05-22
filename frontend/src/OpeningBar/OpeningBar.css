@@ -1,0 +1,18 @@
+.OpeningBar {
+  width: 100%;
+  align-items: center;
+  margin-bottom: 1rem;
+  background-color: rgb(194, 85, 12);
+  position: absolute;
+  border-radius: 5px;
+  height: 800px;
+  width: 350px;
+  top: 42.5px;
+  left: 1400px;
+  opacity: 1;
+  overflow-y: auto;
+}
+
+.OpeningBar button {
+  margin-left: 120px;
+}

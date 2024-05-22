@@ -68,6 +68,7 @@ const Browser = () => {
               key={id}
               id={id}
               name={opening.name}
+              moves={opening.moves}
               description={opening.description}
               deleteOpening={handleDelete}
             />
