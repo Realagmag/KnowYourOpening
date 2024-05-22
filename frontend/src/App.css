@@ -8,9 +8,30 @@ body {
 }
 
 .App {
-  display: grid;
-  place-content: center;
+  position: relative;
+  display: flex; /* Change from grid to flex */
+  justify-content: center; /* Center the content horizontally */
+  align-items: center; /* Center the content vertically */
   height: 100vh;
   background: var(--bg-color);
   font-family: "Sofia Sans", sans-serif;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.browseButton {
+  /* adjust these styles as needed */
+  margin: 10px;
+}
+
+.board {
+  position: relative; /* Add this */
+  /* other styles... */
 }

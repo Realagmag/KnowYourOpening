@@ -1,0 +1,30 @@
+.main {
+  display: flex;
+  justify-content: space-between;
+}
+
+.notification {
+  position: fixed; /* Fixed position */
+  top: 5px; /* 30px from the bottom */
+  left: 540px; /* 30px from the left */
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); /* Box shadow */
+  transition: all 0.3s ease; /* Transition effect */
+  height: 2px;
+  width: 765px;
+  color: #f5f5f5; /* Softer color for text */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 20px;
+}
+
+.notification.error {
+  background-color: red;
+}
+
+.notification.success {
+  background-color: green;
+}
