@@ -25,21 +25,21 @@ function App() {
 
   return (
     <OpeningProvider>
-        <NotificationProvider>
-          <AppContext.Provider value={providerState}>
-            <div className="App">
-              <LoginModal isOpen={isLoginOpen} onClose={handleLoginToggle} />
-              <Board />
-              <Notification />
-              <BrowseBtn />
-              <Browser />
-              <button onClick={handleLoginToggle} className="login-button">
-                Login
-              </button>
-              <OpeningBar />
-            </div>
-          </AppContext.Provider>
-        </NotificationProvider>
+      <NotificationProvider>
+        <AppContext.Provider value={providerState}>
+          <div className="App">
+            <LoginModal isOpen={isLoginOpen} onClose={handleLoginToggle} />
+            <Board />
+            <Notification />
+            <BrowseBtn />
+            <Browser />
+            <button onClick={handleLoginToggle} className="login-button">
+              Login
+            </button>
+            <OpeningBar />
+          </div>
+        </AppContext.Provider>
+      </NotificationProvider>
     </OpeningProvider>
   );
 }
