@@ -1,12 +1,19 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faCircleInfo } from "@fortawesome/free-solid-svg-icons";
+import {
+  faTrash,
+  faCircleInfo,
+  faCirclePlay,
+} from "@fortawesome/free-solid-svg-icons";
 import { Unstable_Popup as BasePopup } from "@mui/base/Unstable_Popup";
 import { styled } from "@mui/system";
 import { ClickAwayListener } from "@mui/base/ClickAwayListener";
 import { useState } from "react";
+import { useOpening } from "./../contexts/OpeningContext";
 
-const Opening = ({ name, id, description, deleteOpening }) => {
+const Opening = ({ name, id, moves, description, deleteOpening }) => {
   const [anchor, setAnchor] = useState(null);
+
+  const { playOpening } = useOpening();
 
   const handleClick = (e) => setAnchor(anchor ? null : e.currentTarget);
 
@@ -21,6 +28,10 @@ const Opening = ({ name, id, description, deleteOpening }) => {
           {id} : {name}
         </p>
         <div>
+          <FontAwesomeIcon
+            icon={faCirclePlay}
+            onClick={() => playOpening({ id, name, moves, description })}
+          />
           <FontAwesomeIcon icon={faTrash} onClick={() => deleteOpening(id)} />
           <FontAwesomeIcon icon={faCircleInfo} onClick={handleClick} />
           {open && (
