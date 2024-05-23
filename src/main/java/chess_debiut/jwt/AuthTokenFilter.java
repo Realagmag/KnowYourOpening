@@ -1,5 +1,6 @@
 package chess_debiut.jwt;
 
+import chess_debiut.user.UserRepository;
 import io.jsonwebtoken.io.IOException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
