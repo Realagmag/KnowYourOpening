@@ -1,10 +1,14 @@
 package chess_debiut.opening;
 
 
+import chess_debiut.user.User;
+import chess_debiut.user_opening.UserOpening;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table
@@ -24,11 +28,14 @@ public class Opening {
     String name;
     String moveSequence;
     String description;
-    String startingSide;
-    Long correct;
-    Long incorrect;
-    LocalDate lastTrained;
+    String playerSide;
     LocalDate creationDate;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User createdBy;
+
+    @OneToMany(mappedBy = "opening", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UserOpening> userOpenings = new HashSet<>();
 
     public Opening() {
     }
@@ -37,37 +44,29 @@ public class Opening {
                    String name,
                    String moveSequence,
                    String description,
-                   String startingSide,
-                   Long correct,
-                   Long incorrect,
-                   LocalDate lastTrained,
-                   LocalDate creationDate) {
+                   String playerSide,
+                   LocalDate creationDate,
+                   User user) {
         this.id = id;
         this.name = name;
         this.moveSequence = moveSequence;
         this.description = description;
-        this.startingSide = startingSide;
-        this.correct = correct;
-        this.incorrect = incorrect;
-        this.lastTrained = lastTrained;
+        this.playerSide = playerSide;
         this.creationDate = creationDate;
+        this.createdBy = user;
     }
 
     public Opening(String name,
                    String moveSequence,
                    String description,
-                   String startingSide,
-                   Long correct,
-                   Long incorrect,
-                   LocalDate lastTrained,
-                   LocalDate creationDate) {
+                   String playerSide,
+                   LocalDate creationDate,
+                   User user) {
         this.name = name;
         this.moveSequence = moveSequence;
         this.description = description;
-        this.startingSide = startingSide;
-        this.correct = correct;
-        this.incorrect = incorrect;
-        this.lastTrained = lastTrained;
+        this.playerSide = playerSide;
         this.creationDate = creationDate;
+        this.createdBy = user;
     }
 }

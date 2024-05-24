@@ -39,7 +39,7 @@ public class OpeningService {
                               String name,
                               String moveSequence,
                               String description,
-                              String startingSide) {
+                              String playerSide) {
         Opening opening = openingRepository
                 .findById(openingId).orElseThrow(() ->
                         new IllegalStateException(
@@ -53,8 +53,8 @@ public class OpeningService {
         if (description != null && !description.isEmpty() && !Objects.equals(opening.getDescription(), description)) {
             opening.setDescription(description);
         }
-        if (startingSide != null && !startingSide.isEmpty() && !Objects.equals(opening.getStartingSide(), startingSide)) {
-            opening.setStartingSide(startingSide);
+        if (playerSide != null && !playerSide.isEmpty() && !Objects.equals(opening.getPlayerSide(), playerSide)) {
+            opening.setPlayerSide(playerSide);
         }
 
     }

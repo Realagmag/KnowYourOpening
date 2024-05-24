@@ -1,5 +1,6 @@
 package chess_debiut.user;
 
+import chess_debiut.user_opening.UserOpening;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +10,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "_user")
 @Setter
@@ -22,6 +26,8 @@ public class User implements UserDetails {
     private Integer id;
     private String username;
     private String password;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UserOpening> userOpenings = new HashSet<>();
     public User(String username, String password){
         this.username = username;
         this.password = password;

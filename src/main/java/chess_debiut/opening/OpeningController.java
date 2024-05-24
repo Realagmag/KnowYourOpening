@@ -1,6 +1,7 @@
 package chess_debiut.opening;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +20,14 @@ public class OpeningController {
     @GetMapping("/opening")
     public List<Opening> getAllOpenings(){
         return openingService.getAllOpenings();
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/opening/user")
+    public List<Opening> getUserOpenings(){
+        System.out.println(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        return openingService.getAllOpenings();
+
     }
 
     @CrossOrigin(origins = "http://localhost:3000")

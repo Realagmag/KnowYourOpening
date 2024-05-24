@@ -51,14 +51,14 @@ public class Game {
     }
 
     public void PlayerLoses() {
-        this.opening.setIncorrect(this.opening.getIncorrect()+1);
-        this.opening.setLastTrained(LocalDate.now());
+//        this.opening.setIncorrect(this.opening.getIncorrect()+1);
+//        this.opening.setLastTrained(LocalDate.now());
         this.setWinner("Computer");
     }
 
     public void PlayerWins() {
-        this.opening.setCorrect(this.opening.getCorrect()+1);
-        this.opening.setLastTrained(LocalDate.now());
+//        this.opening.setCorrect(this.opening.getCorrect()+1);
+//        this.opening.setLastTrained(LocalDate.now());
         this.setWinner("Player");
     }
 
