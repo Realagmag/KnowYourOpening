@@ -29,7 +29,7 @@ public class UserOpening {
     @JoinColumn(name = "opening_id", nullable = false)
     private Opening opening;
 
-    Long correct;
-    Long incorrect;
-    LocalDate lastTrained;
+    private Long correct = 0L;
+    private Long incorrect = 0L;
+    private LocalDate lastTrained;
 }

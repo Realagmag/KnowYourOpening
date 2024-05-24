@@ -3,6 +3,7 @@ package chess_debiut.opening;
 
 import chess_debiut.user.User;
 import chess_debiut.user_opening.UserOpening;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -13,6 +14,7 @@ import java.util.Set;
 @Entity
 @Table
 @Data
+@JsonSerialize(using = OpeningSerializer.class)
 public class Opening {
     @Id
     @SequenceGenerator(
@@ -59,14 +61,10 @@ public class Opening {
     public Opening(String name,
                    String moveSequence,
                    String description,
-                   String playerSide,
-                   LocalDate creationDate,
-                   User user) {
+                   String playerSide) {
         this.name = name;
         this.moveSequence = moveSequence;
         this.description = description;
         this.playerSide = playerSide;
-        this.creationDate = creationDate;
-        this.createdBy = user;
     }
 }

@@ -1,6 +1,7 @@
 package chess_debiut.user;
 
 import chess_debiut.user_opening.UserOpening;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,6 +27,7 @@ public class User implements UserDetails {
     private Integer id;
     private String username;
     private String password;
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserOpening> userOpenings = new HashSet<>();
     public User(String username, String password){

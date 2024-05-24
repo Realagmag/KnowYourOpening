@@ -1,7 +1,10 @@
 package chess_debiut.opening;
 
+import chess_debiut.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,9 +28,7 @@ public class OpeningController {
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/opening/user")
     public List<Opening> getUserOpenings(){
-        System.out.println(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        return openingService.getAllOpenings();
-
+        return openingService.getUserOpenings();
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
@@ -40,6 +41,16 @@ public class OpeningController {
     @DeleteMapping("/opening/{id}")
     public void deleteOpening(@PathVariable("id") Long openingId){
         openingService.deleteOpening(openingId);
+    }
+
+    @PutMapping("/opening/subscribe/{id}")
+    public void subscribeOpening(@PathVariable("id") Long openingId){
+        openingService.subscribeOpening(openingId);
+    }
+
+    @DeleteMapping("/opening/unsub/{id}")
+    public void unsubOpening(@PathVariable("id") Long openingId){
+        openingService.unsubOpening(openingId);
     }
 
     @PutMapping("/opening/{id}")
