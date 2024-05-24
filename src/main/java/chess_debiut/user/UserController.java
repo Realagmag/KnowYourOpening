@@ -11,15 +11,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -37,33 +31,44 @@ public class UserController {
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
-        System.out.println("I passed through filters");
+        System.out.println("I passed through filters");   // debug
         Authentication authentication;
         try {
             authentication = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
                             loginRequest.getPassword()));
-        } catch (AuthenticationException exception){
+        } catch (AuthenticationException exception) {
             Map<String, Object> map = new HashMap<>();
             map.put("message", "Bad credentials");
             map.put("status", false);
             return new ResponseEntity<Object>(map, HttpStatus.NOT_FOUND);
         }
-        System.out.println("Past authentication");
+        System.out.println("Past authentication");    // debug
         SecurityContextHolder.getContext().setAuthentication(authentication);
         User userDetails = (User) authentication.getPrincipal();
         String jwtToken = jwtUtils.generateTokenFromUsername(userDetails);
 //        List<String> roles = userDetails.getAuthorities().stream()
 //                .map(item -> item.getAuthority())
 //                .collect(Collectors.toList());
-        List<String> roles = new ArrayList<>();
+        List<String> roles = new ArrayList<>(); // to do
         LoginResponse response = new LoginResponse(jwtToken, userDetails.getUsername(), roles);
         return ResponseEntity.ok(response);
     }
+
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/register")
-    public void addNewOpening(@RequestBody User user){
-        user.setPassword(user.getPassword());
+    public ResponseEntity<String> addNewOpening(@RequestBody User user) {
+        Optional<User> optional = userRepository.getUserByUsername(user.getUsername());
+        if (optional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("That username is taken.");
+        }
         userRepository.save(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Successful registration!");
+    }
+
+
+    @GetMapping("/user")
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 }

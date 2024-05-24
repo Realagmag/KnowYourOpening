@@ -1,11 +1,15 @@
 package chess_debiut.game;
 
 import chess_debiut.opening.Opening;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@Setter
 public class Game {
     private Opening opening;
     private String onMove;
@@ -43,70 +47,6 @@ public class Game {
         this.check = check;
         this.checkmate = checkmate;
         this.winner = winner;
-        this.pieces = pieces;
-    }
-
-    public Opening getOpening() {
-        return opening;
-    }
-
-    public void setOpening(Opening opening) {
-        this.opening = opening;
-    }
-
-    public String getOnMove() {
-        return onMove;
-    }
-
-    public void setOnMove(String onMove) {
-        this.onMove = onMove;
-    }
-
-    public Long getMoveNumber() {
-        return moveNumber;
-    }
-
-    public void setMoveNumber(Long moveNumber) {
-        this.moveNumber = moveNumber;
-    }
-
-    public String getSequence() {
-        return sequence;
-    }
-
-    public void setSequence(String sequence) {
-        this.sequence = sequence;
-    }
-
-    public boolean isCheck() {
-        return check;
-    }
-
-    public void setCheck(boolean check) {
-        this.check = check;
-    }
-
-    public boolean isCheckmate() {
-        return checkmate;
-    }
-
-    public void setCheckmate(boolean checkmate) {
-        this.checkmate = checkmate;
-    }
-
-    public String getWinner() {
-        return winner;
-    }
-
-    public void setWinner(String winner) {
-        this.winner = winner;
-    }
-
-    public List<Piece> getPieces() {
-        return pieces;
-    }
-
-    public void setPieces(List<Piece> pieces) {
         this.pieces = pieces;
     }
 
