@@ -11,36 +11,37 @@ import OpeningBar from "./OpeningBar/OpeningBar";
 import Notification from "./components/Notification/Notification";
 import { NotificationProvider } from "./contexts/NotificationContext";
 import LoginModal from "./Login/LoginModal";
+import { TokenProvider } from "./contexts/TokenContext";
 
 function App() {
   const [appState, dispatch] = useReducer(reducer, initGameState);
-  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isLoginOpen, setIsLoginOpen] = useState(true);
   const providerState = {
     appState,
     dispatch,
   };
-  const handleLoginToggle = () => {
-    setIsLoginOpen(!isLoginOpen);
+
+  const closeLoginModal = () => {
+    setIsLoginOpen(false);
   };
 
   return (
-    <OpeningProvider>
-      <NotificationProvider>
-        <AppContext.Provider value={providerState}>
-          <div className="App">
-            <LoginModal isOpen={isLoginOpen} onClose={handleLoginToggle} />
-            <Board />
-            <Notification />
-            <BrowseBtn />
-            <Browser />
-            <button onClick={handleLoginToggle} className="login-button">
-              Login
-            </button>
-            <OpeningBar />
-          </div>
-        </AppContext.Provider>
-      </NotificationProvider>
-    </OpeningProvider>
+    <TokenProvider>
+      <OpeningProvider>
+        <NotificationProvider>
+          <AppContext.Provider value={providerState}>
+            <div className="App">
+              <LoginModal isOpen={isLoginOpen} onClose={closeLoginModal} />
+              <Board />
+              <Notification />
+              <BrowseBtn />
+              <Browser />
+              <OpeningBar />
+            </div>
+          </AppContext.Provider>
+        </NotificationProvider>
+      </OpeningProvider>
+    </TokenProvider>
   );
 }
 

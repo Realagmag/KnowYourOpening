@@ -43,16 +43,19 @@ public class OpeningController {
         openingService.deleteOpening(openingId);
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PutMapping("/opening/subscribe/{id}")
     public void subscribeOpening(@PathVariable("id") Long openingId){
         openingService.subscribeOpening(openingId);
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @DeleteMapping("/opening/unsub/{id}")
     public void unsubOpening(@PathVariable("id") Long openingId){
         openingService.unsubOpening(openingId);
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PutMapping("/opening/{id}")
     public void updateOpening(@PathVariable("id") Long openingId,
                               @RequestParam(required = false) String name,
@@ -67,6 +70,7 @@ public class OpeningController {
                 startingSide);
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/opening/{nameFrag}")
     public List<Opening> getOpeningsStartingWith(@PathVariable("nameFrag") String nameFrag){
         return openingService.getOpeningsStartingWith(nameFrag);
