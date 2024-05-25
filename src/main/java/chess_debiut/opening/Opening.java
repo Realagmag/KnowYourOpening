@@ -67,4 +67,13 @@ public class Opening {
         this.description = description;
         this.playerSide = playerSide;
     }
+
+    public static void makePlayerMoveLast(Opening opening){
+        String moveSequence = opening.getMoveSequence();
+        if((opening.getPlayerSide().equals("white") && moveSequence.length()%10 == 0)
+        || (opening.getPlayerSide().equals("black") && moveSequence.length()%10 == 5)){
+            String correctSequence = moveSequence.substring(0, moveSequence.length()-5);
+            opening.setMoveSequence(correctSequence);
+        }
+    }
 }

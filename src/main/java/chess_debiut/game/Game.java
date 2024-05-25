@@ -1,6 +1,7 @@
 package chess_debiut.game;
 
 import chess_debiut.opening.Opening;
+import chess_debiut.opening.OpeningGenerator;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,6 +20,7 @@ public class Game {
     private boolean checkmate;
     private String winner;
     private List<Piece> pieces;
+    private boolean madeMistake;
 
     // create all pieces on their positions and set attributes
     public Game() {
@@ -29,6 +31,7 @@ public class Game {
         this.checkmate = false;
         this.winner = null;
         this.pieces = PositionGenerator.startingPosition();
+        this.madeMistake = false;
 
     }
 
@@ -36,50 +39,29 @@ public class Game {
                 String onMove,
                 Long moveNumber,
                 String sequence,
-                boolean check,
-                boolean checkmate,
                 String winner,
                 List<Piece> pieces) {
         this.opening = opening;
         this.onMove = onMove;
         this.moveNumber = moveNumber;
         this.sequence = sequence;
-        this.check = check;
-        this.checkmate = checkmate;
+        this.check = false;
+        this.checkmate = false;
         this.winner = winner;
         this.pieces = pieces;
+        this.madeMistake = false;
     }
 
-    public void PlayerLoses() {
-//        this.opening.setIncorrect(this.opening.getIncorrect()+1);
-//        this.opening.setLastTrained(LocalDate.now());
-        this.setWinner("Computer");
-    }
-
-    public void PlayerWins() {
-//        this.opening.setCorrect(this.opening.getCorrect()+1);
-//        this.opening.setLastTrained(LocalDate.now());
-        this.setWinner("Player");
+    public void setFinalWinner(boolean mistake){
+        if (mistake){
+            this.setWinner("Computer");
+        } else {
+            this.setWinner("Player");
+            // to do increment correct.
+        }
     }
 
     public void updatePositions(String move) {
-        String fromWhere = move.substring(0, 2);
-        String toWhere = move.substring(3, 5);
-        int index = 0;
-        int index_to_remove= -1;
-        for (Piece piece : pieces) {
-            piece.setMovedLast(false);
-            if (piece.getPosition().equals(toWhere)){
-                index_to_remove = index;
-            }
-            if (piece.getPosition().equals(fromWhere)){
-                piece.pieceMoved(toWhere);
-            }
-            index = index + 1;
-        }
-        if (index_to_remove > -1){
-            this.pieces.remove(index_to_remove);
-        }
-        PositionGenerator.calculatePossibleMoves(this.pieces);
+        OpeningGenerator.makeMove(move, pieces);
     }
 }

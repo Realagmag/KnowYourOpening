@@ -59,16 +59,22 @@ public class OpeningController {
                               @RequestParam(required = false) String moveSequence,
                               @RequestParam(required = false) String description,
                               @RequestParam(required = false) String startingSide){
-        openingService.updateOpening(
-                openingId,
-                name,
-                moveSequence,
-                description,
-                startingSide);
+        openingService.updateOpening(openingId, name, moveSequence, description, startingSide);
     }
-
     @GetMapping("/opening/{nameFrag}")
     public List<Opening> getOpeningsStartingWith(@PathVariable("nameFrag") String nameFrag){
         return openingService.getOpeningsStartingWith(nameFrag);
+    }
+    @GetMapping("/opening/new/start")
+    public OpeningGenerator startGeneratingOpening(){return openingService.startGeneratingOpening();}
+
+    @PutMapping("/opening/new/{move}")
+    public OpeningGenerator moveInOpeningGenerator(@PathVariable("move") String move){
+        return openingService.moveInOpeningGenerator(move);
+    }
+
+    @PostMapping("/opening/new/save")
+    public void saveGeneratedOpening(@RequestBody Opening opening){
+        openingService.saveGeneratedOpening(opening);
     }
 }

@@ -30,4 +30,7 @@ public class GameController {
     public Game moveResponse(@PathVariable("move") String move){
         return gameService.moveResponse(move);
     }
+
+    @PutMapping("/game/mistake")
+    public Game playerMadeMistake(){return gameService.playerMadeMistake();}
 }

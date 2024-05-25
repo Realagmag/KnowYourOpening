@@ -31,6 +31,7 @@ public class GameService {
         Random rand = new Random();
         Opening opening = allOpenings.get(rand.nextInt(allOpenings.size()));
         game.setOpening(opening);
+        handleFirstMoveWhenPlayerIsBlack(game);
         userGames.put(username, game);
         return game;
     }
@@ -41,6 +42,7 @@ public class GameService {
         if (optionalOpening.isPresent()) {
             Opening opening = optionalOpening.get();
             game.setOpening(opening);
+            handleFirstMoveWhenPlayerIsBlack(game);
             userGames.put(username, game);
             return game;
         }else {
@@ -56,10 +58,8 @@ public class GameService {
         String nextMoves = moveSequence.substring(currentSequence.length());
         game.setSequence(currentSequence + move);
         game.setMoveNumber(game.getMoveNumber()+1);
-        if(!nextMoves.startsWith(move)){
-            game.PlayerLoses();}
-        else if (game.getSequence().equals(game.getOpening().getMoveSequence())) {
-            game.PlayerWins();
+        if (game.getSequence().equals(game.getOpening().getMoveSequence())) {
+            game.setFinalWinner(game.isMadeMistake());
         }
         game.updatePositions(move);
         if (game.getWinner() == null){
@@ -68,5 +68,22 @@ public class GameService {
             game.updatePositions(programMove);
         }
         return game;
+    }
+
+    public Game playerMadeMistake() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Game game = userGames.get(username);
+        game.setMadeMistake(true);
+        //to do increment incorrect
+        return game;
+    }
+
+    private void handleFirstMoveWhenPlayerIsBlack(Game game){
+        Opening opening = game.getOpening();
+        if (opening.getPlayerSide().equals("black")){
+            String move = opening.getMoveSequence().substring(0,5);
+            game.updatePositions(move);
+            game.setSequence(move);
+        }
     }
 }

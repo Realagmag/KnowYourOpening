@@ -36,6 +36,9 @@ Zagranie ruchu, jako move można wstawić ruch w formacie e2-e4:
 PUT http://localhost:8080/game/{move}
 Content-Type: application/x-www-form-urlencoded
 
+Wskazanie, że gracz popełnił błąd:
+PUT http://localhost:8080/game/mistake
+
 OPENING ENDPOINTS:
 Zwraca wszystkie openingi w bazie w formacie poniżej:
 GET http://localhost:8080/opening
@@ -73,3 +76,18 @@ DELETE http://localhost:8080/opening/unsub/{id}
 
 Zwraca openingi(globalne), których nazwa zaczyna się dany fragment:
 GET http://localhost:8080/opening/{nameFrag}
+
+Rozpoczęcie "nagrywania" openingu (zwraca listę figur na pozycjach startowych):
+GET http://localhost:8080/opening/new/start
+
+Zrobienie ruchu podczas "nagrywania" (move w formacie e2-e4):
+PUT http://localhost:8080/opening/new/{move}
+
+Zapisanie "nagrywanego" debiutu, trzeba podać pozostałe dane (playerSide "black" lub "white"):
+POST http://localhost:8080/opening/new/save
+{
+    "name" : "nagrany opening"
+    "description" : "projekt na piątkę"
+    "playerSide" : "black"
+}
+

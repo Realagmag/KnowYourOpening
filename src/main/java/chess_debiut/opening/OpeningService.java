@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class OpeningService {
@@ -19,6 +20,7 @@ public class OpeningService {
     private final UserOpeningRepository userOpeningRepository;
 
     private final UserRepository userRepository;
+    private ConcurrentHashMap<String, OpeningGenerator> userOpeningGenerator = new ConcurrentHashMap<>();
     @Autowired
     public OpeningService(OpeningRepository openingRepository, UserOpeningRepository userOpeningRepository, UserRepository userRepository) {
         this.openingRepository = openingRepository;
@@ -36,6 +38,7 @@ public class OpeningService {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User currentUser = userRepository.getUserByUsername(username).get();
         opening.setCreatedBy(currentUser);
+        Opening.makePlayerMoveLast(opening);
         openingRepository.save(opening);
         UserOpening userOpening = new UserOpening();
         userOpening.setOpening(opening);
@@ -132,5 +135,31 @@ public class OpeningService {
         if (relationToDeleteID != null) {
             userOpeningRepository.deleteById(relationToDeleteID);
         }
+    }
+
+    public OpeningGenerator startGeneratingOpening() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        OpeningGenerator openingGenerator = new OpeningGenerator();
+        userOpeningGenerator.put(username, openingGenerator);
+        return openingGenerator;
+    }
+
+    public OpeningGenerator moveInOpeningGenerator(String move) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        OpeningGenerator openingGenerator = userOpeningGenerator.get(username);
+        openingGenerator.updatePosition(move);
+        openingGenerator.setSequence(openingGenerator.getSequence()+move);
+        return openingGenerator;
+    }
+
+    public void saveGeneratedOpening(Opening opening) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        OpeningGenerator openingGenerator = userOpeningGenerator.get(username);
+        if (openingGenerator.getSequence().isEmpty()){
+            return;                                       // maybe throw exception
+        }
+        opening.setMoveSequence(openingGenerator.getSequence());
+        addNewOpening(opening);
+        userOpeningGenerator.remove(username);
     }
 }
