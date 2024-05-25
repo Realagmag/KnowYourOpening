@@ -10,6 +10,7 @@ import { getCorrectMove, generateStartingPossibleMoves } from "./PiecesHelper";
 import { faThermometerThreeQuarters } from "@fortawesome/free-solid-svg-icons";
 import { useContext } from "react";
 import { NotificationContext } from "../../contexts/NotificationContext"; // adjust the path as needed
+import { useToken } from "./../../contexts/TokenContext";
 
 const Pieces = () => {
   const ref = useRef();
@@ -18,6 +19,7 @@ const Pieces = () => {
   const [responseData, setResponseData] = useState(null);
   const [isSequenceEnded, setIsSequenceEnded] = useState(false);
   const { setNotification } = useContext(NotificationContext);
+  const { currentToken } = useToken();
 
   const currentPosition = appState.position[appState.position.length - 1];
   /**
@@ -45,7 +47,11 @@ const Pieces = () => {
   const makeComputerMove = async (responseData, position) => {
     let newPos = JSON.parse(JSON.stringify(position));
 
-    const computerMove = await getCorrectMove(responseData, false);
+    const computerMove = await getCorrectMove(
+      responseData,
+      false,
+      currentToken
+    );
     console.log("The computer move isaaa");
     console.log(computerMove);
 
@@ -77,7 +83,7 @@ const Pieces = () => {
     console.log("Legal moves are");
     console.log(legalMoves);
     console.log(responseData);
-    const correctMove = await getCorrectMove(responseData);
+    const correctMove = await getCorrectMove(responseData, currentToken);
     console.log("The correct move is");
     console.log(correctMove);
 

@@ -2,31 +2,38 @@ import axios from "axios";
 
 let sequence = null;
 
-function fetchSequence() {
+const config = (token) => {
+  return {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  };
+};
+
+async function fetchSequence(token) {
   if (!sequence) {
     console.log("Fetching sequence");
-    return axios
-      .get("http://localhost:8080/opening")
-      .then((response) => {
-        sequence = response.data[0].moveSequence;
-        return sequence;
-      })
-      .catch((error) => {
-        console.error(error);
-        return Promise.reject(error);
-      });
+    try {
+      const response = await axios.get(
+        "http://localhost:8080/opening",
+        config(token)
+      );
+      sequence = response.data[0].moveSequence;
+      return sequence;
+    } catch (error) {
+      console.error(error);
+      return await Promise.reject(error);
+    }
   } else {
     return Promise.resolve(sequence);
   }
 }
 
-
-export async function getCorrectMove(jsonData, humanMove=true) {
-  sequence = await fetchSequence();
+export async function getCorrectMove(jsonData, humanMove = true, token) {
+  sequence = await fetchSequence(token);
 
   try {
-    // console.log("aaaa");
-    // console.log(jsonData);
     let moves = sequence
       .match(/.{5}/g)
       .map((move) => [move.slice(0, 2), move.slice(3)]);
@@ -37,13 +44,13 @@ export async function getCorrectMove(jsonData, humanMove=true) {
       .map((move) => [move.slice(0, 2), move.slice(3)]);
 
     let lastMove = allMoves[allMoves.length - 1];
-    let lastMoveIndex = moves.findIndex((move) => move[0] === lastMove[0] && move[1] === lastMove[1]);
-
+    let lastMoveIndex = moves.findIndex(
+      (move) => move[0] === lastMove[0] && move[1] === lastMove[1]
+    );
 
     if (humanMove) {
       return moves[lastMoveIndex + 1];
-    }
-    else {
+    } else {
       return moves[lastMoveIndex];
     }
   } catch (error) {

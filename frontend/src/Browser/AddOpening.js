@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { PublishOpening } from "./BackendCom";
+import { useToken } from "./../contexts/TokenContext";
 import "./Browser.css";
 
 const AddOpening = ({ setShowAddOpening, onAdd }) => {
   const [openingName, setOpeningName] = useState("");
   const [moves, setMoves] = useState("");
   const [description, setDescription] = useState("");
+  const { currentToken } = useToken();
 
   const handleInputChange = (event) => {
     setOpeningName(event.target.value);
@@ -21,7 +23,7 @@ const AddOpening = ({ setShowAddOpening, onAdd }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    await PublishOpening(openingName, moves, description);
+    await PublishOpening(openingName, moves, description, currentToken);
     console.log(`Adding opening: ${openingName}`);
     console.log(`Moves: ${moves}`);
     console.log(`Description: ${description}`);

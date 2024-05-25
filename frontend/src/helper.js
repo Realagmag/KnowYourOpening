@@ -2,14 +2,16 @@ import axios from "axios";
 
 export const getCharacter = (file) => String.fromCharCode(file + 96);
 
-export async function CreatePosition() {
-  const { data } = await axios.get("http://localhost:8080/game/new");
+export async function CreatePosition(token) {
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  const { data } = await axios.get("http://localhost:8080/game/new", config);
   const pieces = processPiecesData(data.pieces);
-
   return pieces;
 }
 
-function processPiecesData(data) {
+export function processPiecesData(data) {
   const chessboard = new Array(8).fill("").map(() => new Array(8).fill(""));
 
   data.forEach((piece) => {
