@@ -27,7 +27,10 @@ body {
 }
 
 .browseButton {
-  /* adjust these styles as needed */
+  position: absolute; /* or 'relative', 'fixed', 'sticky' depending on your needs */
+  top: 20px; /* adjust as needed */
+  right: 20px; /* adjust as needed */
+  /* existing styles... */
   margin: 10px;
 }
 

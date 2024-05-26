@@ -1,3 +1,6 @@
+import React from 'react';
+import './Browser.css';
+
 const BrowseBtn = () => {
   const onClick = () => {
     const browserElement = document.querySelector(".Browser");

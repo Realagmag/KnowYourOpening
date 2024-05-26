@@ -1,8 +1,13 @@
+:root {
+  --main-bg-color: #2c2b2a;
+  --text-color: #ffffff;
+}
+
 .OpeningBar {
   width: 100%;
   align-items: center;
   margin-bottom: 1rem;
-  background-color: rgb(194, 85, 12);
+  background-color:var(--main-bg-color);
   position: absolute;
   border-radius: 5px;
   height: 800px;
@@ -11,6 +16,7 @@
   left: 1400px;
   opacity: 1;
   overflow-y: auto;
+  color: #ffffff;
 }
 
 .OpeningBar button {

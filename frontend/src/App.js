@@ -11,6 +11,8 @@ import OpeningBar from "./OpeningBar/OpeningBar";
 import Notification from "./components/Notification/Notification";
 import { NotificationProvider } from "./contexts/NotificationContext";
 import LoginModal from "./Login/LoginModal";
+import FlipButton from "./components/FlipButton/FlipButton";
+import { PerspectiveProvider } from "./contexts/PerspectiveContext";
 
 function App() {
   const [appState, dispatch] = useReducer(reducer, initGameState);
@@ -24,23 +26,25 @@ function App() {
   };
 
   return (
-    <OpeningProvider>
-      <NotificationProvider>
-        <AppContext.Provider value={providerState}>
-          <div className="App">
-            <LoginModal isOpen={isLoginOpen} onClose={handleLoginToggle} />
-            <Board />
-            <Notification />
-            <BrowseBtn />
-            <Browser />
-            <button onClick={handleLoginToggle} className="login-button">
-              Login
-            </button>
-            <OpeningBar />
-          </div>
-        </AppContext.Provider>
-      </NotificationProvider>
-    </OpeningProvider>
+    <PerspectiveProvider>
+      <OpeningProvider>
+        <NotificationProvider>
+          <AppContext.Provider value={providerState}>
+            <div className="App">
+              <LoginModal isOpen={isLoginOpen} onClose={handleLoginToggle} />
+              <Board />
+              <Notification />
+              <BrowseBtn />
+              <Browser />
+              <button onClick={handleLoginToggle} className="login-button">
+                Login
+              </button>
+              <OpeningBar />
+            </div>
+          </AppContext.Provider>
+        </NotificationProvider>
+      </OpeningProvider>
+    </PerspectiveProvider>
   );
 }
 

@@ -22,9 +22,9 @@
 }
 
 .notification.error {
-  background-color: red;
+  background-color: rgb(196, 30, 58);
 }
 
 .notification.success {
-  background-color: green;
+  background-color: rgba(111, 218, 111, 0.719);
 }
