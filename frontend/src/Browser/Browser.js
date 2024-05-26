@@ -60,7 +60,7 @@ const Browser = () => {
       <Search onSearch={handleSearch} showSearch={showSearch} />
       <AddBtn
         onAdd={() => {
-          setTimeout(fetchOpenings, 20);
+          setTimeout(fetchOpenings, 50);
           toggleSearch();
         }}
       />

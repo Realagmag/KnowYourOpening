@@ -46,7 +46,6 @@ const Pieces = () => {
 
   const makeComputerMove = async (responseData, position) => {
     let newPos = JSON.parse(JSON.stringify(position));
-
     const computerMove = await getCorrectMove(
       responseData,
       false,
@@ -106,6 +105,15 @@ const Pieces = () => {
     return false;
   };
 
+  const config = (token) => {
+    return {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+  };
+
   const onDrop = async (e) => {
     e.preventDefault();
     let newPosition = JSON.parse(JSON.stringify(currentPosition));
@@ -123,7 +131,7 @@ const Pieces = () => {
     ({ newPosition, from, to } = result);
 
     axios
-      .put(`http://localhost:8080/game/${from}-${to}`)
+      .put(`http://localhost:8080/game/${from}-${to}`, config(currentToken))
       .then(async (response) => {
         if (
           response.data.winner == null ||

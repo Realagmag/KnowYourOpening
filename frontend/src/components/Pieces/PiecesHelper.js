@@ -5,7 +5,6 @@ let sequence = null;
 const config = (token) => {
   return {
     headers: {
-      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
   };
@@ -14,6 +13,7 @@ const config = (token) => {
 async function fetchSequence(token) {
   if (!sequence) {
     console.log("Fetching sequence");
+    console.log(token);
     try {
       const response = await axios.get(
         "http://localhost:8080/opening",

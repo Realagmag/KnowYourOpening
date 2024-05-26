@@ -2,13 +2,16 @@ import axios from "axios";
 
 export const getCharacter = (file) => String.fromCharCode(file + 96);
 
-export async function CreatePosition(token) {
+export async function fetchGameState(token) {
   const config = {
     headers: { Authorization: `Bearer ${token}` },
   };
   const { data } = await axios.get("http://localhost:8080/game/new", config);
   const pieces = processPiecesData(data.pieces);
-  return pieces;
+  return {
+    position: [pieces],
+    turn: "w",
+  };
 }
 
 export function processPiecesData(data) {
