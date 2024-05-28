@@ -162,4 +162,5 @@ public class OpeningService {
         addNewOpening(opening);
         userOpeningGenerator.remove(username);
     }
+
 }

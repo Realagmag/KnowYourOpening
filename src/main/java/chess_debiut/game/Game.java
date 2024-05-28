@@ -57,7 +57,6 @@ public class Game {
             this.setWinner("Computer");
         } else {
             this.setWinner("Player");
-            // to do increment correct.
         }
     }
 
