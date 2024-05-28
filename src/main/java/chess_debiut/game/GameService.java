@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -35,14 +36,56 @@ public class GameService {
     public Game startNewGame() {
         Game game = new Game();
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        List<Opening> allOpenings = openingService.getUserOpenings();
-        Random rand = new Random();
-        Opening opening = allOpenings.get(rand.nextInt(allOpenings.size()));
+        Opening opening = chooseOpening(username);
         game.setOpening(opening);
         handleFirstMoveWhenPlayerIsBlack(game);
         userGames.put(username, game);
         return game;
     }
+
+    private Opening chooseOpening(String username) {
+        List<UserOpening> userOpenings = userOpeningRepository.findByUser(
+                userRepository.getUserByUsername(username).get());
+        Random rand = new Random();
+        int wayOfGettingOpening = rand.nextInt(5);
+        if (wayOfGettingOpening == 0){                                 //take one that was played the longest to the past
+            UserOpening chosenUserOpening = userOpenings.get(0);
+            long days = ChronoUnit.DAYS.between(chosenUserOpening.getLastTrained(), LocalDate.now());
+            for (UserOpening userOpening: userOpenings){
+                long currentDays = ChronoUnit.DAYS.between(userOpening.getLastTrained(), LocalDate.now());
+                if ( currentDays > days){
+                    days = currentDays;
+                    chosenUserOpening = userOpening;
+                }
+            }
+            return chosenUserOpening.getOpening();
+        }
+        else if (wayOfGettingOpening == 1){                             //pick with the lowest correct ratio
+            UserOpening chosenUserOpening = userOpenings.get(0);
+            long ratio;
+            if (chosenUserOpening.getIncorrect() != 0) {
+                ratio = chosenUserOpening.getCorrect() / chosenUserOpening.getIncorrect();
+            } else {
+                ratio = chosenUserOpening.getCorrect();
+            }
+            long currentRatio;
+            for (UserOpening userOpening: userOpenings){
+                if (userOpening.getIncorrect() != 0) {
+                    currentRatio = userOpening.getCorrect() / userOpening.getIncorrect();
+                } else {
+                    currentRatio = userOpening.getCorrect();
+                }
+                if (currentRatio < ratio){
+                    ratio = currentRatio;
+                    chosenUserOpening = userOpening;
+                }
+            }
+            return chosenUserOpening.getOpening();
+        } else {                                                         //pick random
+            return userOpenings.get(rand.nextInt(userOpenings.size())).getOpening();
+        }
+    }
+
     public Game startNewGame(Long openingId) {
         Game game = new Game();
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
