@@ -31,7 +31,7 @@ const Pieces = ({ initializeGameState }) => {
   const [openingSuccess, setOpeningSuccess] = useState(false);
   console.log("CURRENT OPENING");
 
-
+  let humanMove = true;
   const config = {
     headers: {
       Authorization: `Bearer ${currentToken}`,
@@ -72,23 +72,27 @@ const Pieces = ({ initializeGameState }) => {
   // setPerspective("white");
 
   async function handleButtonClick() {
-    initializeGameState();
-    let openingId = currentOpening.id;
-    console.log("OPENING ID");
-    console.log(openingId);
-    console.log(currentPosition);
-    console.log(currentOpening);
-    axios
-      .get(`http://localhost:8080/game/new/8`, config)
-      .then((response) => {
-        console.log("newgame");
-        console.log(response.data);
-        setResponseData(response.data);
-        currentPosition = defaultPosition;
-      })
-      .catch((error) => {
-        console.error("Error starting game:", error);
-      });
+    try {
+      initializeGameState();
+      let openingId = currentOpening.id;
+      console.log("OPENING ID");
+      console.log(openingId);
+      console.log(currentPosition);
+      console.log(currentOpening);
+      axios
+        .get(`http://localhost:8080/game/new/${openingId}`, config)
+        .then((response) => {
+          console.log("newgame");
+          console.log(response.data);
+          setResponseData(response.data);
+          currentPosition = defaultPosition;
+        })
+        .catch((error) => {
+          console.error("Error starting game:", error);
+        });
+    } catch (error) {
+      console.error("Error starting game:", error);
+    }
   }
 
   function getFromTo(file, rank, x, y) {
@@ -126,6 +130,9 @@ const Pieces = ({ initializeGameState }) => {
     }
   }
 
+
+
+  let counter = 0;
   /**
    * Retrieves the correct move based on the provided JSON data and human move flag.
    * @param {Object} jsonData - The JSON data containing the sequence of moves.
@@ -142,13 +149,16 @@ const Pieces = ({ initializeGameState }) => {
       let moves = sequence
         .match(/.{5}/g)
         .map((move) => [move.slice(0, 2), move.slice(3)]);
-      console.log(moves);
 
-      let allMoves = jsonData.sequence
+        let allMoves = jsonData.sequence
         .match(/.{5}/g)
         .map((move) => [move.slice(0, 2), move.slice(3)]);
+
+        console.log("MOVES");
+        console.log(moves);
       console.log("ALL MOVES");
       console.log(allMoves);
+
       let lastMove = allMoves[allMoves.length - 1];
       console.log("LAST MOVE");
       console.log(lastMove);
