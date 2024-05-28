@@ -17,8 +17,10 @@ public class Game {
     private boolean check;
     private boolean checkmate;
     private String winner;
-    private List<Piece> pieces;
     private boolean madeMistake;
+    private String nextMove;
+    private List<Piece> pieces;
+
 
     // create all pieces on their positions and set attributes
     public Game() {
@@ -30,7 +32,7 @@ public class Game {
         this.winner = null;
         this.pieces = PositionGenerator.startingPosition();
         this.madeMistake = false;
-
+        this.nextMove = "";
     }
 
     public Game(Opening opening,

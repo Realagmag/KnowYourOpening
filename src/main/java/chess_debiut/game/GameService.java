@@ -39,8 +39,15 @@ public class GameService {
         Opening opening = chooseOpening(username);
         game.setOpening(opening);
         handleFirstMoveWhenPlayerIsBlack(game);
+        calculateNextMove(game);
         userGames.put(username, game);
         return game;
+    }
+
+    private void calculateNextMove(Game game) {
+        int len = game.getSequence().length();
+        String nextMove = game.getOpening().getMoveSequence().substring(len, len+5);
+        game.setNextMove(nextMove);
     }
 
     private Opening chooseOpening(String username) {
@@ -102,7 +109,7 @@ public class GameService {
             if (userOpening.isEmpty()){
                 openingService.subscribeOpening(openingId);
             }
-
+            calculateNextMove(game);
             return game;
         }else {
             throw new ObjectNotFoundException(optionalOpening, "No opening with that id in database.");
@@ -121,7 +128,7 @@ public class GameService {
         // if game ended
         if (game.getSequence().equals(game.getOpening().getMoveSequence())) {
             game.setFinalWinner(game.isMadeMistake());
-
+            game.setNextMove("");
             // incorect correct and update lastTrained
             if (game.getWinner().equals("Player")){
                 UserOpening userOpening = userOpeningRepository.findByUserAndOpening(
@@ -136,6 +143,7 @@ public class GameService {
             String programMove = nextMoves.substring(5, 10);
             game.setSequence(game.getSequence()+programMove);
             game.updatePositions(programMove);
+            calculateNextMove(game);
         }
         return game;
     }
