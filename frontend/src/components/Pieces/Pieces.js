@@ -1,6 +1,6 @@
 import "./Pieces.css";
 import Piece from "./Piece";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { copyPosition } from "../../helper";
 import { useAppContext } from "../../contexts/Context";
 import { makeNewMove } from "../../reducer/actions/move";
@@ -12,8 +12,10 @@ import { useContext } from "react";
 import { NotificationContext } from "../../contexts/NotificationContext";
 import { useOpening } from "../../contexts/OpeningContext";
 import { usePerspective } from "../../contexts/PerspectiveContext";
+import { useToken } from "./../../contexts/TokenContext";
+import { getDefaultPosition } from "./PiecesHelper";
 
-const Pieces = () => {
+const Pieces = ({ initializeGameState }) => {
   const ref = useRef();
   const { appState, dispatch } = useAppContext();
   const [isDragging, setIsDragging] = useState(false);
@@ -21,10 +23,79 @@ const Pieces = () => {
   const { currentOpening } = useOpening();
   const [isSequenceEnded, setIsSequenceEnded] = useState(false);
   const { setNotification } = useContext(NotificationContext);
+  const { currentToken } = useToken();
   const { perspective, setPerspective } = usePerspective();
-  const currentPosition = appState.position[appState.position.length - 1];
-  console.log("CURRENT POSITION");
+  const defaultPosition = getDefaultPosition();
+  const [mistakes, setMistakes] = useState(0);
+  let finishEarly = false;
+  const [openingSuccess, setOpeningSuccess] = useState(false);
+  console.log("CURRENT OPENING");
   console.log(currentOpening);
+  const config = {
+    headers: {
+      Authorization: `Bearer ${currentToken}`,
+      "Content-Type": "application/json",
+    },
+  };
+  try {
+    if (currentOpening.playerSide === "black") {
+      setPerspective("black");
+    } else {
+      setPerspective("white");
+    }
+  } catch (error) {
+    console.error(error);
+  }
+
+  useEffect(() => {
+    if (openingSuccess) {
+
+      setNotification({ type: "success", message: "Sequence completed successfully" });
+      axios
+        .get("http://localhost:8080/game/new", config)
+        .then((response) => {
+          console.log("NEW GAME");
+
+
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+
+      setOpeningSuccess(false);
+    }
+  }, [openingSuccess]);
+
+  console.log("OPENING");
+  console.log(currentOpening);
+
+  let currentPosition = null;
+  if (appState.position) {
+    currentPosition = appState.position[appState.position.length - 1];
+    console.log("CURRENT POSITION");
+    console.log(currentPosition);
+  } else {
+    currentPosition = defaultPosition;
+  }
+  // setPerspective("white");
+
+  async function handleButtonClick() {
+    initializeGameState();
+    let openingId = currentOpening.id;
+    console.log("OPENING ID");
+    console.log(openingId);
+    console.log(currentPosition)
+    console.log(currentOpening)
+    axios.get(`http://localhost:8080/game/new/${openingId}`, config)
+    .then(response => {
+      console.log(response.data);
+      setResponseData(response.data);
+    })
+    .catch(error => {
+      console.error("Error starting game:", error);
+    });
+
+  }
 
   function getFromTo(file, rank, x, y) {
     console.log("GETTING FROM TO");
@@ -40,11 +111,12 @@ const Pieces = () => {
       newX = 7 - x;
       newY = 7 - y;
     }
-    const from = `${String.fromCharCode(97 + Number(newFile))}${Number(newRank) + 1}`;
+    const from = `${String.fromCharCode(97 + Number(newFile))}${
+      Number(newRank) + 1
+    }`;
     const to = `${String.fromCharCode(97 + newY)}${newX + 1}`;
 
-
-    return { from, to, newRank, newFile, newX, newY};
+    return { from, to, newRank, newFile, newX, newY };
   }
 
   function fetchSequence(currentOpening) {
@@ -65,7 +137,6 @@ const Pieces = () => {
    * @returns {Array} - The correct move as an array of two elements representing the source and destination squares.
    */
   async function getCorrectMove(jsonData, humanMove = true) {
-
     let sequence = await fetchSequence(currentOpening);
     console.log("SEQUENCE ");
     console.log(humanMove);
@@ -76,10 +147,11 @@ const Pieces = () => {
         .map((move) => [move.slice(0, 2), move.slice(3)]);
       console.log(moves);
 
-      let allMoves = jsonData.sequence
+      let allMoves = jsonData.moveSequence
         .match(/.{5}/g)
         .map((move) => [move.slice(0, 2), move.slice(3)]);
-
+      console.log("ALL MOVES");
+      console.log(jsonData);
       let lastMove = allMoves[allMoves.length - 1];
       console.log("LAST MOVE");
       console.log(lastMove);
@@ -111,10 +183,19 @@ const Pieces = () => {
     return { x, y };
   };
 
-  const makeComputerMove = async (responseData, position) => {
+  const makeComputerMove = async (data, position) => {
+    console.log("MAKING COMPUTER MOVE");
+    console.log("--------------------------------------");
+    if (finishEarly) {
+      return position;
+    }
     let newPos = JSON.parse(JSON.stringify(position));
+    const computerMove = await getCorrectMove(
+      data,
+      false,
+      currentToken
+    );
 
-    const computerMove = await getCorrectMove(responseData, false);
     console.log("COMPUTER MOVE");
     console.log(computerMove);
 
@@ -144,39 +225,52 @@ const Pieces = () => {
     // const from = `${String.fromCharCode(97 + Number(file))}${Number(rank) + 1}`;
     // const to = `${String.fromCharCode(97 + y)}${x + 1}`;
     console.log(rank, file, x, y);
-    let { from, to, newRank, newFile, newX, newY } = getFromTo(file, rank, x, y);
+    let { from, to, newRank, newFile, newX, newY } = getFromTo(
+      file,
+      rank,
+      x,
+      y
+    );
     const legalMoves = getLegalMoves(rank, file, responseData, perspective);
 
-    console.log('position:', position);
-    console.log('newRank:', newRank);
-    console.log('newFile:', newFile);
-    console.log('newX:', newX);
-    console.log('newY:', newY);
-    console.log('from', from);
-    console.log('to', to);
+    console.log("position:", position);
+    console.log("newRank:", newRank);
+    console.log("newFile:", newFile);
+    console.log("newX:", newX);
+    console.log("newY:", newY);
+    console.log("from", from);
+    console.log("to", to);
 
     position[newRank][newFile] = "";
 
-    const correctMove = await getCorrectMove(responseData);
+    const correctMove = await getCorrectMove(responseData, currentToken);
 
     if (!validateMove(from, to, correctMove)) {
+      setMistakes(mistakes + 1);
+
+      if (mistakes === 0) {
+        axios
+          .put("http://localhost:8080/game/mistake", {}, config)
+          .then((response) => {
+            console.log("MISTAKE", response.data);
+          })
+          .catch(console.error);
+        setOpeningSuccess(false);
+      }
+
       return;
     }
-    console.log(from)
-    console.log(to)
+
+    console.log(from);
+    console.log(to);
 
     position[newRank][newFile] = "";
     position[newX][newY] = p;
-    console.log("NEW POSITION");
-    console.log(position);
+
     return { newPosition: position, from, to };
   };
 
   const validateMove = (from, to, correctMove) => {
-    console.log("VALIDATING MOVE");
-    console.log(from);
-    console.log(to);
-    console.log(correctMove);
     if (from === correctMove[0] && to === correctMove[1]) {
       return true;
     }
@@ -185,6 +279,8 @@ const Pieces = () => {
 
   const onDrop = async (e) => {
     e.preventDefault();
+    console.log("CURRENT POSITION 2")
+    console.log(currentPosition)
     let newPosition = JSON.parse(JSON.stringify(currentPosition));
     let from = "";
     let to = "";
@@ -194,25 +290,40 @@ const Pieces = () => {
       setNotification({ type: "error", message: "Incorrect move" });
       return;
     } else {
+
       setNotification({ type: "success", message: "Correct move" });
     }
 
     ({ newPosition, from, to } = result);
+    console.log("NEW POSITION");
+    console.log(newPosition);
+
+    console.log("opening");
+    console.log(currentOpening);
 
     axios
-      .put(`http://localhost:8080/game/${from}-${to}`)
+      .put(`http://localhost:8080/game/${from}-${to}`, {}, config)
       .then(async (response) => {
         {
           setResponseData(response.data);
-
-          if (response.data.winner) {
-            console.log("THE END");
+          console.log("RESPONSE DATA");
+          console.log(response.data);
+          if (response.data.winner == "Player") {
             setIsSequenceEnded(true);
+            setOpeningSuccess(true);
+            finishEarly = true;
           }
           console.log("RESPONSE DATA");
+          console.log(response.data);
+          console.log("NEW POSITION");
           console.log(newPosition);
-
-          const newPos = await makeComputerMove(response.data, newPosition);
+          console.log("FINISH EARLY");
+          console.log(finishEarly);
+          const newPos = await makeComputerMove(
+            response.data,
+            newPosition,
+            finishEarly
+          );
           dispatch({ type: "NEW_MOVE", payload: { newPosition: newPos } });
         }
       });
@@ -243,6 +354,7 @@ const Pieces = () => {
             ) : null
           )
         )}
+      <button onClick={handleButtonClick} className="reset-button">Reset Game</button>
     </div>
   );
 };
