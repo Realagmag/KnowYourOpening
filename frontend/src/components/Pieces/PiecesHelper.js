@@ -40,7 +40,7 @@ export async function getCorrectMove(jsonData, humanMove = true, token) {
       .map((move) => [move.slice(0, 2), move.slice(3)]);
     console.log(moves);
 
-    let allMoves = jsonData.moveSequence
+    let allMoves = jsonData.moves
       .match(/.{5}/g)
       .map((move) => [move.slice(0, 2), move.slice(3)]);
 

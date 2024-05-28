@@ -12,7 +12,7 @@ import { useOpening } from "./../contexts/OpeningContext";
 
 const Opening = ({ name, id, moves, description, deleteOpening }) => {
   const [anchor, setAnchor] = useState(null);
-
+  console.log("Openingpls", id, name, moves, description);
   const { playOpening } = useOpening();
 
   const handleClick = (e) => setAnchor(anchor ? null : e.currentTarget);

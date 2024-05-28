@@ -53,12 +53,13 @@ export async function PublishOpening(name, moves, info, token) {
         name: name,
         moveSequence: moves,
         description: info,
-        playerSide: "white",
+        playerSide: "black",
       },
       config(token)
     )
     .then((response) => {
       console.log("Response:", response.data);
+
     })
     .catch((error) => {
       console.error("Error:", error);

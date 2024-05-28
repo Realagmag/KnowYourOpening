@@ -30,33 +30,25 @@ const Pieces = ({ initializeGameState }) => {
   let finishEarly = false;
   const [openingSuccess, setOpeningSuccess] = useState(false);
   console.log("CURRENT OPENING");
-  console.log(currentOpening);
+
+
   const config = {
     headers: {
       Authorization: `Bearer ${currentToken}`,
       "Content-Type": "application/json",
     },
   };
-  try {
-    if (currentOpening.playerSide === "black") {
-      setPerspective("black");
-    } else {
-      setPerspective("white");
-    }
-  } catch (error) {
-    console.error(error);
-  }
 
   useEffect(() => {
     if (openingSuccess) {
-
-      setNotification({ type: "success", message: "Sequence completed successfully" });
+      setNotification({
+        type: "success",
+        message: "Sequence completed successfully",
+      });
       axios
         .get("http://localhost:8080/game/new", config)
         .then((response) => {
           console.log("NEW GAME");
-
-
         })
         .catch((error) => {
           console.error(error);
@@ -84,17 +76,19 @@ const Pieces = ({ initializeGameState }) => {
     let openingId = currentOpening.id;
     console.log("OPENING ID");
     console.log(openingId);
-    console.log(currentPosition)
-    console.log(currentOpening)
-    axios.get(`http://localhost:8080/game/new/${openingId}`, config)
-    .then(response => {
-      console.log(response.data);
-      setResponseData(response.data);
-    })
-    .catch(error => {
-      console.error("Error starting game:", error);
-    });
-
+    console.log(currentPosition);
+    console.log(currentOpening);
+    axios
+      .get(`http://localhost:8080/game/new/8`, config)
+      .then((response) => {
+        console.log("newgame");
+        console.log(response.data);
+        setResponseData(response.data);
+        currentPosition = defaultPosition;
+      })
+      .catch((error) => {
+        console.error("Error starting game:", error);
+      });
   }
 
   function getFromTo(file, rank, x, y) {
@@ -120,10 +114,12 @@ const Pieces = ({ initializeGameState }) => {
   }
 
   function fetchSequence(currentOpening) {
-    console.log("currentOpening");
+    console.log("currentOpenings");
     console.log(currentOpening);
-    if (currentOpening && currentOpening.moveSequence) {
-      return currentOpening.moveSequence;
+    currentOpening = currentOpening;
+    if (currentOpening && currentOpening.moves) {
+
+      return currentOpening.moves;
     } else {
       console.error("currentOpening or currentOpening.moves is undefined");
       return null;
@@ -138,20 +134,21 @@ const Pieces = ({ initializeGameState }) => {
    */
   async function getCorrectMove(jsonData, humanMove = true) {
     let sequence = await fetchSequence(currentOpening);
-    console.log("SEQUENCE ");
+    console.log("SEQUENCi ");
     console.log(humanMove);
     console.log(sequence);
+    console.log(jsonData)
     try {
       let moves = sequence
         .match(/.{5}/g)
         .map((move) => [move.slice(0, 2), move.slice(3)]);
       console.log(moves);
 
-      let allMoves = jsonData.moveSequence
+      let allMoves = jsonData.sequence
         .match(/.{5}/g)
         .map((move) => [move.slice(0, 2), move.slice(3)]);
       console.log("ALL MOVES");
-      console.log(jsonData);
+      console.log(allMoves);
       let lastMove = allMoves[allMoves.length - 1];
       console.log("LAST MOVE");
       console.log(lastMove);
@@ -160,9 +157,14 @@ const Pieces = ({ initializeGameState }) => {
       );
 
       if (humanMove) {
+        console.log(lastMoveIndex)
+        if (lastMoveIndex === 0) {
+          return moves[0];
+        }
         return moves[lastMoveIndex + 1];
       } else {
-        return moves[lastMoveIndex];
+        console.log(moves);
+        return allMoves[allMoves.length - 1];
       }
     } catch (error) {
       console.error(error);
@@ -190,11 +192,7 @@ const Pieces = ({ initializeGameState }) => {
       return position;
     }
     let newPos = JSON.parse(JSON.stringify(position));
-    const computerMove = await getCorrectMove(
-      data,
-      false,
-      currentToken
-    );
+    const computerMove = await getCorrectMove(data, false, currentToken);
 
     console.log("COMPUTER MOVE");
     console.log(computerMove);
@@ -243,8 +241,9 @@ const Pieces = ({ initializeGameState }) => {
 
     position[newRank][newFile] = "";
 
-    const correctMove = await getCorrectMove(responseData, currentToken);
-
+    const correctMove = await getCorrectMove(responseData, true);
+    console.log("CORRECT MOVEwork");
+    console.log(correctMove);
     if (!validateMove(from, to, correctMove)) {
       setMistakes(mistakes + 1);
 
@@ -279,8 +278,8 @@ const Pieces = ({ initializeGameState }) => {
 
   const onDrop = async (e) => {
     e.preventDefault();
-    console.log("CURRENT POSITION 2")
-    console.log(currentPosition)
+    console.log("CURRENT POSITION 2");
+    console.log(currentPosition);
     let newPosition = JSON.parse(JSON.stringify(currentPosition));
     let from = "";
     let to = "";
@@ -290,12 +289,11 @@ const Pieces = ({ initializeGameState }) => {
       setNotification({ type: "error", message: "Incorrect move" });
       return;
     } else {
-
       setNotification({ type: "success", message: "Correct move" });
     }
 
     ({ newPosition, from, to } = result);
-    console.log("NEW POSITION");
+    console.log("NEW POSITIONi");
     console.log(newPosition);
 
     console.log("opening");
@@ -324,6 +322,8 @@ const Pieces = ({ initializeGameState }) => {
             newPosition,
             finishEarly
           );
+          console.log("NEW POSa");
+          console.log(newPos);
           dispatch({ type: "NEW_MOVE", payload: { newPosition: newPos } });
         }
       });
@@ -354,7 +354,17 @@ const Pieces = ({ initializeGameState }) => {
             ) : null
           )
         )}
-      <button onClick={handleButtonClick} className="reset-button">Reset Game</button>
+      <button onClick={handleButtonClick} className="reset-button">
+        Reset Game
+      </button>
+      <button
+        onClick={() =>
+          setPerspective(perspective === "white" ? "black" : "white")
+        }
+        className="flip-button"
+      >
+        Flip Perspective
+      </button>
     </div>
   );
 };

@@ -6,20 +6,20 @@ export function fetchGameState(token) {
   const config = {
     headers: { Authorization: `Bearer ${token}` },
   };
-  return;}
-//   return axios.get("http://localhost:8080/game/new", config)
-//     .then(response => {
-//       const pieces = processPiecesData(response.data.pieces);
-//       return {
-//         position: [pieces],
-//         turn: "w",
-//       };
-//     })
-//     .catch(error => {
-//       console.error("Error fetching game state:", error);
-//       throw error;
-//     });
-// }
+
+  return axios.get("http://localhost:8080/game/new", config)
+    .then(response => {
+      const pieces = processPiecesData(response.data.pieces);
+      return {
+        position: [pieces],
+        turn: "w",
+      };
+    })
+    .catch(error => {
+      console.error("Error fetching game state:", error);
+      throw error;
+    });
+}
 
 export function processPiecesData(data) {
   const chessboard = new Array(8).fill("").map(() => new Array(8).fill(""));
