@@ -286,6 +286,7 @@ const Pieces = ({ initializeGameState }) => {
     return false;
   };
 
+
   const onDrop = async (e) => {
     e.preventDefault();
     console.log("CURRENT POSITION 2");

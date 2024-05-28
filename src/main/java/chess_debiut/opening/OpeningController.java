@@ -1,6 +1,11 @@
 package chess_debiut.opening;
 
+import chess_debiut.user.User;
+import chess_debiut.user_opening.UserOpening;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +27,12 @@ public class OpeningController {
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/opening/user")
+    public List<Opening> getUserOpenings(){
+        return openingService.getUserOpenings();
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/opening")
     public void addNewOpening(@RequestBody Opening opening){
         openingService.addNewOpening(opening);
@@ -33,22 +44,44 @@ public class OpeningController {
         openingService.deleteOpening(openingId);
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
+    @PutMapping("/opening/subscribe/{id}")
+    public void subscribeOpening(@PathVariable("id") Long openingId){
+        openingService.subscribeOpening(openingId);
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @DeleteMapping("/opening/unsub/{id}")
+    public void unsubOpening(@PathVariable("id") Long openingId){
+        openingService.unsubOpening(openingId);
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
     @PutMapping("/opening/{id}")
     public void updateOpening(@PathVariable("id") Long openingId,
                               @RequestParam(required = false) String name,
                               @RequestParam(required = false) String moveSequence,
                               @RequestParam(required = false) String description,
                               @RequestParam(required = false) String startingSide){
-        openingService.updateOpening(
-                openingId,
-                name,
-                moveSequence,
-                description,
-                startingSide);
+        openingService.updateOpening(openingId, name, moveSequence, description, startingSide);
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/opening/{nameFrag}")
     public List<Opening> getOpeningsStartingWith(@PathVariable("nameFrag") String nameFrag){
         return openingService.getOpeningsStartingWith(nameFrag);
     }
+    @GetMapping("/opening/new/start")
+    public OpeningGenerator startGeneratingOpening(){return openingService.startGeneratingOpening();}
+
+    @PutMapping("/opening/new/{move}")
+    public OpeningGenerator moveInOpeningGenerator(@PathVariable("move") String move){
+        return openingService.moveInOpeningGenerator(move);
+    }
+
+    @PostMapping("/opening/new/save")
+    public void saveGeneratedOpening(@RequestBody Opening opening){
+        openingService.saveGeneratedOpening(opening);
+    }
+
 }

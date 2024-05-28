@@ -38,7 +38,7 @@ const AppContent = () => {
   const providerState = {
     appState,
     dispatch,
-    initializeGameState, 
+    initializeGameState,
   };
 
   if (loading) {

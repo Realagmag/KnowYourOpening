@@ -68,7 +68,6 @@ const Piece = ({ rank, file, piece, gameState, perspective }) => {
 
   const onDragEnd = (e) => {
     const highlightedSquares = document.querySelectorAll(".highlight");
-
     highlightedSquares.forEach((square) => {
       square.classList.remove("highlight");
     });

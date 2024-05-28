@@ -11,5 +11,5 @@ public interface OpeningRepository extends JpaRepository<Opening, Long> {
 
     @Query("SELECT o FROM Opening o WHERE o.name LIKE %:nameFrag%")
     Optional<Opening> findOpeningStartingWith(String nameFrag);
-
+    Optional<Opening> findOpeningById(Long id);
 }

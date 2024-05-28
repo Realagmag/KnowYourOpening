@@ -17,13 +17,20 @@ public class GameController {
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/game/new")
     public Game startNewGame(){
-
         return gameService.startNewGame();
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/game/new/{id}")
+    public Game startNewGame(@PathVariable("id") Long openingId){
+        return gameService.startNewGame(openingId);
     }
 
     @PutMapping("/game/{move}")
     public Game moveResponse(@PathVariable("move") String move){
-
         return gameService.moveResponse(move);
     }
+
+    @PutMapping("/game/mistake")
+    public Game playerMadeMistake(){return gameService.playerMadeMistake();}
 }

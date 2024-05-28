@@ -30,7 +30,7 @@ const AddOpening = ({ setShowAddOpening, onAdd }) => {
     setOpeningName("");
     setMoves("");
     setDescription("");
-    onAdd(newOpening); 
+    onAdd(newOpening);
     setShowAddOpening(false);
   };
   const handleCancel = (e) => {

@@ -24,7 +24,7 @@ function App() {
     <TokenProvider>
       <OpeningProvider>
         <NotificationProvider>
-          <PerspectiveProvider> {/* Add PerspectiveProvider here */}
+          <PerspectiveProvider> {}
             <div className="App">
               <LoginModal isOpen={isLoginOpen} onClose={closeLoginModal} />
               <AppContent />
