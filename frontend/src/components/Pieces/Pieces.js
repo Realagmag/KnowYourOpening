@@ -122,8 +122,8 @@ const Pieces = ({ initializeGameState }) => {
   function fetchSequence(currentOpening) {
     console.log("currentOpening");
     console.log(currentOpening);
-    if (currentOpening && currentOpening.moves) {
-      return currentOpening.moves;
+    if (currentOpening && currentOpening.moveSequence) {
+      return currentOpening.moveSequence;
     } else {
       console.error("currentOpening or currentOpening.moves is undefined");
       return null;

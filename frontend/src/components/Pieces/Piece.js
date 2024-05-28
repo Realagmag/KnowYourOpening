@@ -19,6 +19,8 @@ export const getLegalMoves = (rank, file, gameState, perspective) => {
   console.log(file);
 
   try {
+    console.log("GAME STATE")
+    console.log(gameState);
     const pieceData = gameState.pieces.find((p) => p.position === from);
 
     return pieceData.possibleMoves;
@@ -41,6 +43,7 @@ const isDraggable = (piece, gameState) => {
   return gameState.onMove === pieceColorMap[piece[0]];
 };
 
+
 const Piece = ({ rank, file, piece, gameState, perspective }) => {
 
   const onDragStart = (e) => {
@@ -48,10 +51,12 @@ const Piece = ({ rank, file, piece, gameState, perspective }) => {
     e.dataTransfer.setData("text/plain", `${piece},${rank},${file}`);
     try {
       const legalMoves = getLegalMoves(rank, file, gameState, perspective);
+      console.log("Legal moves " + legalMoves);
 
       legalMoves.forEach((move) => {
         const square = document.querySelector(`.square-${move}`);
 
+        console.log(square);
         if (square) {
           square.classList.add("highlight");
         }
@@ -59,7 +64,6 @@ const Piece = ({ rank, file, piece, gameState, perspective }) => {
     } catch (error) {
       console.error(error);
     }
-    // setTimeout(() => (e.target.style.display = "none"), 0);
   };
 
   const onDragEnd = (e) => {

@@ -1,14 +1,16 @@
+import React, { useEffect, useState, useCallback } from "react";
 import "./Browser.css";
 import Opening from "./Opening";
 import Search from "./Search";
 import { getOpenings, deleteOpening } from "./BackendCom";
-import React, { useEffect, useState } from "react";
 import AddBtn from "./AddBtn";
+import { useToken } from "./../contexts/TokenContext";
 
 const Browser = () => {
   const [openings, setOpenings] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [showSearch, setShowSearch] = useState(true);
+  const { currentToken } = useToken();
 
   const toggleSearch = () => {
     setShowSearch((prev) => !prev);
@@ -16,8 +18,8 @@ const Browser = () => {
 
   const handleDelete = async (id) => {
     try {
-      await deleteOpening(id);
-      setTimeout(fetchOpenings, 20);
+      await deleteOpening(id, currentToken);
+      setTimeout(fetchOpenings, 50);
     } catch (error) {
       console.error("Error deleting opening:", error);
     }
@@ -27,18 +29,20 @@ const Browser = () => {
     setSearchTerm(searchTerm);
   };
 
-  const fetchOpenings = async () => {
+  const fetchOpenings = useCallback(async () => {
     try {
-      const response = await getOpenings();
+      const response = await getOpenings(currentToken);
       setOpenings(response);
     } catch (error) {
       console.error("Error fetching openings:", error);
     }
-  };
+  }, [currentToken]);
 
   useEffect(() => {
-    fetchOpenings();
-  }, []);
+    if (currentToken) {
+      fetchOpenings();
+    }
+  }, [currentToken, fetchOpenings]);
 
   const filteredOpenings = Object.entries(openings)
     .filter(
@@ -56,7 +60,7 @@ const Browser = () => {
       <Search onSearch={handleSearch} showSearch={showSearch} />
       <AddBtn
         onAdd={() => {
-          setTimeout(fetchOpenings, 20);
+          setTimeout(fetchOpenings, 50);
           toggleSearch();
         }}
       />
@@ -70,7 +74,7 @@ const Browser = () => {
               name={opening.name}
               moves={opening.moves}
               description={opening.description}
-              deleteOpening={handleDelete}
+              deleteOpening={() => handleDelete(id)}
             />
           ))}
     </form>

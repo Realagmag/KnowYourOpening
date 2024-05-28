@@ -20,6 +20,12 @@ export const reducer = (state, action) => {
         perspective,
       };
     }
+    case "INIT_GAME_STATE": {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    }
     default:
       return state;
   }

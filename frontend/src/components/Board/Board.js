@@ -4,9 +4,13 @@ import Files from "../bits/Files";
 import Ranks from "../bits/Ranks";
 import { usePerspective } from "../../contexts/PerspectiveContext";
 import { useContext } from "react";
+import AppContext from "../../contexts/Context";
+import './Board.css';
 
 const Board = () => {
   const { perspective } = usePerspective();
+  const { initializeGameState } = useContext(AppContext);
+
   const ranks = Array(8)
     .fill()
     .map((x, i) => 8 - i);
@@ -45,10 +49,12 @@ const Board = () => {
         )}
       </div>
 
-      <Pieces />
+      <Pieces initializeGameState={initializeGameState} />
 
       <Files files={files} />
     </div>
   );
 };
+
+
 export default Board;
