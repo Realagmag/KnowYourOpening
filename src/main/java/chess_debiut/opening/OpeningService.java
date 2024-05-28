@@ -1,5 +1,6 @@
 package chess_debiut.opening;
 
+import chess_debiut.game.Game;
 import chess_debiut.user.User;
 import chess_debiut.user.UserRepository;
 import chess_debiut.user_opening.UserOpening;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.security.InvalidParameterException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -33,6 +35,9 @@ public class OpeningService {
     }
 
     public void addNewOpening(Opening opening) {
+        if (!validMoveSequence(opening)) {
+            throw new InvalidParameterException("Invalid move sequence!");
+        };
         LocalDate date = LocalDate.now();
         opening.setCreationDate(date);
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -44,6 +49,21 @@ public class OpeningService {
         userOpening.setOpening(opening);
         userOpening.setUser(currentUser);
         userOpeningRepository.save(userOpening);
+    }
+
+    private boolean validMoveSequence(Opening opening) {
+        Game game = new Game();
+        String moveSequence = opening.getMoveSequence();
+        while (!moveSequence.isEmpty()){
+            try {
+                String move = moveSequence.substring(0, 5);
+                game.updatePositions(move);
+                moveSequence = moveSequence.substring(5);
+            } catch (Exception e){
+                return false;
+            }
+        }
+        return true;
     }
 
     public void deleteOpening(Long openingId) {

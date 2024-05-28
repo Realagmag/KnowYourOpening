@@ -27,15 +27,20 @@ public class OpeningGenerator {
         String toWhere = move.substring(3, 5);
         int index = 0;
         int index_to_remove = -1;
+        boolean piece_moved = false;
         for (Piece piece : pieces) {
             piece.setMovedLast(false);
             if (piece.getPosition().equals(toWhere)){
                 index_to_remove = index;
             }
-            if (piece.getPosition().equals(fromWhere)){
+            if (piece.getPosition().equals(fromWhere) && piece.getPossibleMoves().contains(toWhere)){
                 piece.pieceMoved(toWhere);
+                piece_moved = true;
             }
             index = index + 1;
+        }
+        if (!piece_moved){
+            throw new IllegalStateException("No piece has moved");
         }
         if (index_to_remove > -1){
             pieces.remove(index_to_remove);
