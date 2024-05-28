@@ -91,3 +91,11 @@ POST http://localhost:8080/opening/new/save
     "playerSide" : "black"
 }
 
+Zwraca statystki dotyczące wszystkich debiutów gracza:
+GET http://localhost:8080/opening/stats
+{
+    "opening": 10,      // id openingu
+    "correct": 0,
+    "incorrect": 0,
+    "lastTrained": 0    // liczba dni od ostatniego zagrania do dzisiaj
+}
