@@ -9,8 +9,7 @@ const config = (token) => {
   };
 };
 
-export function getOpenings(token) {
-
+export async function getOpenings(token, allOpenings) {
   const config = {
     headers: { Authorization: "Bearer " + token },
   };
