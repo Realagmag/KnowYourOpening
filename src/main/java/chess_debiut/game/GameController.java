@@ -26,11 +26,13 @@ public class GameController {
         return gameService.startNewGame(openingId);
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PutMapping("/game/{move}")
     public Game moveResponse(@PathVariable("move") String move){
         return gameService.moveResponse(move);
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PutMapping("/game/mistake")
     public Game playerMadeMistake(){return gameService.playerMadeMistake();}
 }
