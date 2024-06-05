@@ -9,17 +9,17 @@ const config = (token) => {
   };
 };
 
-export function getOpenings(token) {
+export function getOpenings(token, allOpenings) {
   console.log("Getting openings");
   console.log(token);
   const config = {
     headers: { Authorization: "Bearer " + token },
   };
   return axios
-    .get("http://localhost:8080/opening", config)
+    .get(`http://localhost:8080/opening${allOpenings ? "/user" : ""}`, config)
     .then((response) => {
       const openings = {};
-      console.log(response.data)
+      console.log(response.data);
       response.data.forEach((el) => {
         openings[el.id] = {
           name: el.name,
@@ -37,7 +37,7 @@ export function getOpenings(token) {
 
 export async function deleteOpening(id, token) {
   axios
-    .delete(`http://localhost:8080/opening/${id}`, config(token))
+    .delete(`http://localhost:8080/opening/delete/${id}`, config(token))
     .then((response) => {
       console.log(`deleted opening ${id}`);
     })
@@ -46,23 +46,44 @@ export async function deleteOpening(id, token) {
     });
 }
 
-export async function PublishOpening(name, moves, info, token) {
+export async function subscribeOpening(id, token) {
   axios
-    .post(
+    .put(`http://localhost:8080/opening/subscribe/${id}`, {}, config(token))
+    .then((response) => {
+      console.log(`subscribed opening ${id}`);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}
+
+export async function unsubscribeOpening(id, token) {
+  axios
+    .delete(`http://localhost:8080/opening/unsub/${id}`, config(token))
+    .then((response) => {
+      console.log(`deleted opening ${id}`);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}
+
+export async function PublishOpening(name, moves, info, isWhite, token) {
+  try {
+    const response = await axios.post(
       "http://localhost:8080/opening",
       {
         name: name,
         moveSequence: moves,
         description: info,
-        playerSide: "white",
+        playerSide: isWhite ? "white" : "black",
       },
       config(token)
-    )
-    .then((response) => {
-      console.log("Response:", response.data);
-
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
+    );
+    console.log("Response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
 }
