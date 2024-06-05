@@ -19,13 +19,21 @@ const AppContent = () => {
   const [loading, setLoading] = useState(true);
   const [initialized, setInitialized] = useState(false);
   console.log("App state:", appState);
-  
+
   const initializeGameState = async (isFetchState = true) => {
     if (!currentToken) return;
     let gameState = {};
     try {
       if (isFetchState) {
-        gameState = await fetchGameState(currentToken);
+        try {
+          gameState = await fetchGameState(currentToken);
+        } catch (error) {
+          let pieces = getDefaultPosition();
+          gameState = {
+            position: [pieces],
+            turn: "w",
+          };
+        }
       } else {
         let pieces = getDefaultPosition();
         console.log("PiEces: ", pieces);
@@ -46,7 +54,8 @@ const AppContent = () => {
 
   useEffect(() => {
     if (currentToken && !initialized) {
-      initializeGameState();
+      initializeGameState(true);
+
     }
   }, [currentToken, initialized]);
 

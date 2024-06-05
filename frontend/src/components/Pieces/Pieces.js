@@ -40,7 +40,7 @@ const Pieces = ({ initializeGameState }) => {
     }
   }, [currentOpening]);
 
-  console.log(responseData)
+  console.log(responseData);
   const config = {
     headers: {
       Authorization: `Bearer ${currentToken}`,
@@ -54,25 +54,15 @@ const Pieces = ({ initializeGameState }) => {
         type: "success",
         message: "Sequence completed successfully",
       });
-      // axios
-      //   .get("http://localhost:8080/game/new", config)
-      //   .then((response) => {
-      //     console.log("NEW GAME");
-      //     console.log(response.data);
-      //     // let gameID = response.data.openming.id;
-      //     // handleButtonClick(gameID);
-      //   })
-      //   .catch((error) => {
-      //     console.error(error);
-      //   });
-      handleButtonClick();
-      setOpeningSuccess(false);
+      setTimeout(() => {
+        handleButtonClick();
+        setOpeningSuccess(false);
+      }, 1000);
     }
   }, [openingSuccess]);
 
   let currentPosition = null;
   if (appState.position && !firstLoading) {
-
     currentPosition = appState.position[appState.position.length - 1];
 
     console.log(currentPosition);
@@ -207,8 +197,6 @@ const Pieces = ({ initializeGameState }) => {
   };
 
   const makeComputerMove = async (data, position) => {
-    console.log("MAKING COMPUTER MOVE");
-    console.log("--------------------------------------");
     if (finishEarly) {
       return position;
     }
@@ -251,6 +239,14 @@ const Pieces = ({ initializeGameState }) => {
       y
     );
     const legalMoves = getLegalMoves(rank, file, responseData, perspective);
+    try {
+      if (legalMoves.length === 0) {
+        return;
+      }
+    } catch (error) {
+      console.error(error);
+      return;
+    }
 
     console.log("position:", position);
     console.log("newRank:", newRank);
@@ -325,27 +321,21 @@ const Pieces = ({ initializeGameState }) => {
       .then(async (response) => {
         {
           setResponseData(response.data);
-          console.log("RESPONSE DATA");
-          console.log(response.data);
           if (response.data.winner == "Player") {
             setIsSequenceEnded(true);
             setOpeningSuccess(true);
             finishEarly = true;
+            dispatch({ type: "NEW_MOVE", payload: { newPosition: newPosition } });
+            return;
           }
-          console.log("RESPONSE DATA");
-          console.log(response.data);
           setNextMove(response.data.nextMove);
-          console.log("NEW POSITION");
-          console.log(newPosition);
-          console.log("FINISH EARLY");
-          console.log(finishEarly);
+
           const newPos = await makeComputerMove(
             response.data,
             newPosition,
             finishEarly
           );
-          console.log("NEW POSa");
-          console.log(newPos);
+
           dispatch({ type: "NEW_MOVE", payload: { newPosition: newPos } });
         }
       });
