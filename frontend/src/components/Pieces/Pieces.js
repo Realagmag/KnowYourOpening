@@ -20,17 +20,18 @@ const Pieces = ({ initializeGameState }) => {
   const { appState, dispatch } = useAppContext();
   const [isDragging, setIsDragging] = useState(false);
   const [responseData, setResponseData] = useState(null);
-  const { currentOpening } = useOpening();
+  const { currentOpening, setCurrentOpening } = useOpening();
   const [isSequenceEnded, setIsSequenceEnded] = useState(false);
   const { setNotification } = useContext(NotificationContext);
   const { currentToken } = useToken();
   const { perspective, setPerspective } = usePerspective();
+  const [nextMove, setNextMove] = useState(null);
   const defaultPosition = getDefaultPosition();
   const [mistakes, setMistakes] = useState(0);
-  let finishEarly = false;
   const [openingSuccess, setOpeningSuccess] = useState(false);
-  console.log("CURRENT OPENING");
+  const [firstLoading, setFirstLoading] = useState(true);
 
+  let finishEarly = false;
   let humanMove = true;
   const config = {
     headers: {
@@ -49,6 +50,9 @@ const Pieces = ({ initializeGameState }) => {
         .get("http://localhost:8080/game/new", config)
         .then((response) => {
           console.log("NEW GAME");
+          console.log(response.data);
+          // let gameID = response.data.openming.id;
+          // handleButtonClick(gameID);
         })
         .catch((error) => {
           console.error(error);
@@ -58,16 +62,17 @@ const Pieces = ({ initializeGameState }) => {
     }
   }, [openingSuccess]);
 
-  console.log("OPENING");
-  console.log(currentOpening);
-
   let currentPosition = null;
-  if (appState.position) {
+  if (appState.position && !firstLoading) {
+    console.log("APP STATE");
+    console.log(appState.position);
+
     currentPosition = appState.position[appState.position.length - 1];
     console.log("CURRENT POSITION");
     console.log(currentPosition);
   } else {
     currentPosition = defaultPosition;
+    setFirstLoading(false);
   }
   // setPerspective("white");
 
@@ -75,10 +80,10 @@ const Pieces = ({ initializeGameState }) => {
     try {
       initializeGameState();
       let openingId = currentOpening.id;
-      console.log("OPENING ID");
-      console.log(openingId);
-      console.log(currentPosition);
-      console.log(currentOpening);
+      // if (id != null) {
+      //   openingId = id;
+      // }
+      currentPosition = defaultPosition;
       axios
         .get(`http://localhost:8080/game/new/${openingId}`, config)
         .then((response) => {
@@ -122,15 +127,12 @@ const Pieces = ({ initializeGameState }) => {
     console.log(currentOpening);
     currentOpening = currentOpening;
     if (currentOpening && currentOpening.moves) {
-
       return currentOpening.moves;
     } else {
       console.error("currentOpening or currentOpening.moves is undefined");
       return null;
     }
   }
-
-
 
   let counter = 0;
   /**
@@ -144,18 +146,18 @@ const Pieces = ({ initializeGameState }) => {
     console.log("SEQUENCi ");
     console.log(humanMove);
     console.log(sequence);
-    console.log(jsonData)
+    console.log(jsonData);
     try {
       let moves = sequence
         .match(/.{5}/g)
         .map((move) => [move.slice(0, 2), move.slice(3)]);
 
-        let allMoves = jsonData.sequence
+      let allMoves = jsonData.sequence
         .match(/.{5}/g)
         .map((move) => [move.slice(0, 2), move.slice(3)]);
 
-        console.log("MOVES");
-        console.log(moves);
+      console.log("MOVES");
+      console.log(moves);
       console.log("ALL MOVES");
       console.log(allMoves);
 
@@ -167,11 +169,15 @@ const Pieces = ({ initializeGameState }) => {
       );
 
       if (humanMove) {
-        console.log(lastMoveIndex)
-        if (lastMoveIndex === 0) {
+        console.log("HUMAN MOVE");
+        console.log(nextMove);
+        let moveToMake = nextMove.split("-");
+        console.log(moveToMake);
+
+        if (moveToMake.length === 0) {
           return moves[0];
         }
-        return moves[lastMoveIndex + 1];
+        return moveToMake;
       } else {
         console.log(moves);
         return allMoves[allMoves.length - 1];
@@ -286,7 +292,6 @@ const Pieces = ({ initializeGameState }) => {
     return false;
   };
 
-
   const onDrop = async (e) => {
     e.preventDefault();
     console.log("CURRENT POSITION 2");
@@ -324,6 +329,7 @@ const Pieces = ({ initializeGameState }) => {
           }
           console.log("RESPONSE DATA");
           console.log(response.data);
+          setNextMove(response.data.nextMove);
           console.log("NEW POSITION");
           console.log(newPosition);
           console.log("FINISH EARLY");

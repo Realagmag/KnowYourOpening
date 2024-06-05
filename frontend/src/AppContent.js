@@ -9,7 +9,7 @@ import { initGameState } from "./constant";
 import AppContext from "./contexts/Context";
 import { useToken } from "./contexts/TokenContext";
 import { fetchGameState } from "./helper";
-
+import { OpeningProvider } from "./contexts/OpeningContext";
 const AppContent = () => {
   const { currentToken } = useToken();
   const [appState, dispatch] = useReducer(reducer, initGameState);
@@ -18,8 +18,11 @@ const AppContent = () => {
 
   const initializeGameState = async () => {
     if (!currentToken) return;
+
     try {
+
       const gameState = await fetchGameState(currentToken);
+      console.log("Game state:", gameState);
       dispatch({ type: "INIT_GAME_STATE", payload: gameState });
     } catch (error) {
       console.error("Error initializing game state:", error);
@@ -47,13 +50,14 @@ const AppContent = () => {
 
   return (
     <AppContext.Provider value={providerState}>
-      <Board />
-      <Notification />
-      <BrowseBtn />
-      <Browser />
-      <OpeningBar />
+      <OpeningProvider initializeGameState={initializeGameState}>
+        <Board />
+        <Notification />
+        <BrowseBtn />
+        <Browser />
+        <OpeningBar />
+      </OpeningProvider>
     </AppContext.Provider>
   );
 };
-
 export default AppContent;

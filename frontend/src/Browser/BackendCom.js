@@ -19,6 +19,7 @@ export function getOpenings(token) {
     .get("http://localhost:8080/opening", config)
     .then((response) => {
       const openings = {};
+      console.log(response.data)
       response.data.forEach((el) => {
         openings[el.id] = {
           name: el.name,
@@ -53,7 +54,7 @@ export async function PublishOpening(name, moves, info, token) {
         name: name,
         moveSequence: moves,
         description: info,
-        playerSide: "black",
+        playerSide: "white",
       },
       config(token)
     )
