@@ -10,6 +10,7 @@ export function fetchGameState(token) {
   return axios.get("http://localhost:8080/game/new", config)
     .then(response => {
       const pieces = processPiecesData(response.data.pieces);
+      console.log("Pieces:", pieces)
       return {
         position: [pieces],
         turn: "w",
@@ -20,6 +21,9 @@ export function fetchGameState(token) {
       throw error;
     });
 }
+
+
+
 
 export function processPiecesData(data) {
   const chessboard = new Array(8).fill("").map(() => new Array(8).fill(""));

@@ -10,18 +10,30 @@ import AppContext from "./contexts/Context";
 import { useToken } from "./contexts/TokenContext";
 import { fetchGameState } from "./helper";
 import { OpeningProvider } from "./contexts/OpeningContext";
+import { getDefaultPosition } from "./components/Pieces/PiecesHelper";
+import { positions } from "@mui/system";
+
 const AppContent = () => {
   const { currentToken } = useToken();
   const [appState, dispatch] = useReducer(reducer, initGameState);
   const [loading, setLoading] = useState(true);
   const [initialized, setInitialized] = useState(false);
-
-  const initializeGameState = async () => {
+  console.log("App state:", appState);
+  
+  const initializeGameState = async (isFetchState = true) => {
     if (!currentToken) return;
-
+    let gameState = {};
     try {
-
-      const gameState = await fetchGameState(currentToken);
+      if (isFetchState) {
+        gameState = await fetchGameState(currentToken);
+      } else {
+        let pieces = getDefaultPosition();
+        console.log("PiEces: ", pieces);
+        gameState = {
+          position: [pieces],
+          turn: "w",
+        };
+      }
       console.log("Game state:", gameState);
       dispatch({ type: "INIT_GAME_STATE", payload: gameState });
     } catch (error) {

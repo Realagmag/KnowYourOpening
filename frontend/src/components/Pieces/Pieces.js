@@ -33,6 +33,14 @@ const Pieces = ({ initializeGameState }) => {
 
   let finishEarly = false;
   let humanMove = true;
+
+  useEffect(() => {
+    if (currentOpening) {
+      handleButtonClick();
+    }
+  }, [currentOpening]);
+
+  console.log(responseData)
   const config = {
     headers: {
       Authorization: `Bearer ${currentToken}`,
@@ -46,31 +54,30 @@ const Pieces = ({ initializeGameState }) => {
         type: "success",
         message: "Sequence completed successfully",
       });
-      axios
-        .get("http://localhost:8080/game/new", config)
-        .then((response) => {
-          console.log("NEW GAME");
-          console.log(response.data);
-          // let gameID = response.data.openming.id;
-          // handleButtonClick(gameID);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-
+      // axios
+      //   .get("http://localhost:8080/game/new", config)
+      //   .then((response) => {
+      //     console.log("NEW GAME");
+      //     console.log(response.data);
+      //     // let gameID = response.data.openming.id;
+      //     // handleButtonClick(gameID);
+      //   })
+      //   .catch((error) => {
+      //     console.error(error);
+      //   });
+      handleButtonClick();
       setOpeningSuccess(false);
     }
   }, [openingSuccess]);
 
   let currentPosition = null;
   if (appState.position && !firstLoading) {
-    console.log("APP STATE");
-    console.log(appState.position);
 
     currentPosition = appState.position[appState.position.length - 1];
-    console.log("CURRENT POSITION");
+
     console.log(currentPosition);
   } else {
+    console.log("AFTER CLICK");
     currentPosition = defaultPosition;
     setFirstLoading(false);
   }
@@ -78,12 +85,10 @@ const Pieces = ({ initializeGameState }) => {
 
   async function handleButtonClick() {
     try {
-      initializeGameState();
+      initializeGameState(false);
       let openingId = currentOpening.id;
-      // if (id != null) {
-      //   openingId = id;
-      // }
       currentPosition = defaultPosition;
+      console.log("OPENING ID", openingId);
       axios
         .get(`http://localhost:8080/game/new/${openingId}`, config)
         .then((response) => {

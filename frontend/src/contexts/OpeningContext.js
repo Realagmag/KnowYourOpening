@@ -20,19 +20,24 @@ export const OpeningProvider = ({ children, initializeGameState }) => {
     },
   };
 
-  const playOpening = (opening) => {
-    console.log("CLICKING OPENING")
+  const playOpening = async (opening) => {
+    console.log("CLICKING OPENING");
     console.log(opening);
     let openingId = opening.id;
-    axios
-    .get(`http://localhost:8080/game/new/${openingId}`, config)
-    .then(async (response) => {
-      setCurrentOpening(opening);
-      // await initializeGameState();
+    console.log("Opening ID", openingId);
 
-    }).catch((error) => {
+    initializeGameState(false);
+
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/game/new/${openingId}`,
+        config
+      );
+      setCurrentOpening(opening);
+      console.log(response.data);
+    } catch (error) {
       console.error("Error:", error);
-    });
+    }
   };
 
   return (

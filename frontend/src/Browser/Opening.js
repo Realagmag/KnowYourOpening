@@ -30,7 +30,9 @@ const Opening = ({ name, id, moves, description, deleteOpening }) => {
         <div>
           <FontAwesomeIcon
             icon={faCirclePlay}
-            onClick={() => playOpening({ id, name, moves, description })}
+            onClick={async () =>
+              await playOpening({ id, name, moves, description })
+            }
           />
           <FontAwesomeIcon icon={faTrash} onClick={() => deleteOpening(id)} />
           <FontAwesomeIcon icon={faCircleInfo} onClick={handleClick} />
