@@ -13,14 +13,8 @@ export const getLegalMoves = (rank, file, gameState, perspective) => {
   }
   const from = `${String.fromCharCode(97 + Number(file))}${Number(rank) + 1}`;
 
-  console.log("rank");
-  console.log(rank);
-  console.log("file");
-  console.log(file);
-
   try {
-    console.log("GAME STATE")
-    console.log(gameState);
+
     const pieceData = gameState.pieces.find((p) => p.position === from);
 
     return pieceData.possibleMoves;

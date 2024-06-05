@@ -5,6 +5,8 @@ import { styled } from "@mui/system";
 import { ClickAwayListener } from "@mui/base/ClickAwayListener";
 import { useState } from "react";
 import { useOpening } from "./../contexts/OpeningContext";
+import { useToken } from "./../contexts/TokenContext";
+import OpeningStats from "../components/OpeningStats/OpeningStats";
 
 const Opening = ({
   name,
@@ -15,16 +17,23 @@ const Opening = ({
   subscribeOpening,
   unsubscribeOpening,
   isUserOpening,
+  stats
 }) => {
+
+
   const [anchor, setAnchor] = useState(null);
-  console.log("Openingpls", id, name, moves, description);
+
   const { playOpening } = useOpening();
+  const { currentToken } = useToken();
+
 
   const handleClick = (e) => setAnchor(anchor ? null : e.currentTarget);
 
   const handleClickAway = () => setAnchor(null);
 
   const open = Boolean(anchor);
+
+
 
   return (
     <ClickAwayListener onClickAway={handleClickAway}>
@@ -65,10 +74,11 @@ const Opening = ({
             </BasePopup>
           )}
         </div>
+        <OpeningStats stats={stats} id={id} />
       </div>
     </ClickAwayListener>
   );
-};
+}
 
 export default Opening;
 

@@ -9,9 +9,8 @@ const config = (token) => {
   };
 };
 
-export function getOpenings(token, allOpenings) {
-  console.log("Getting openings");
-  console.log(token);
+export function getOpenings(token) {
+
   const config = {
     headers: { Authorization: "Bearer " + token },
   };
@@ -19,7 +18,7 @@ export function getOpenings(token, allOpenings) {
     .get(`http://localhost:8080/opening${allOpenings ? "/user" : ""}`, config)
     .then((response) => {
       const openings = {};
-      console.log(response.data);
+
       response.data.forEach((el) => {
         openings[el.id] = {
           name: el.name,

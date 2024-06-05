@@ -6,6 +6,8 @@ import { getOpenings, deleteOpening } from "./BackendCom";
 import AddBtn from "./AddBtn";
 import { useToken } from "./../contexts/TokenContext";
 import { subscribeOpening, unsubscribeOpening } from "./BackendCom";
+import { useOpening } from "../contexts/OpeningContext";
+import axios from "axios";
 
 const Browser = () => {
   const [openings, setOpenings] = useState([]);
@@ -13,7 +15,9 @@ const Browser = () => {
   const [showSearch, setShowSearch] = useState(true);
   const [showAllOpenings, setShowAllOpenings] = useState(true);
   const { currentToken } = useToken();
-
+  const [stats, setStats] = useState(null);
+  const [ids, setIds] = useState(null);
+  const { currentOpening } = useOpening();
   const toggleSearch = () => {
     setShowSearch((prev) => !prev);
   };
@@ -58,6 +62,13 @@ const Browser = () => {
     }
   }, [currentToken, showAllOpenings]);
 
+  const config = {
+    headers: {
+      Authorization: `Bearer ${currentToken}`,
+      "Content-Type": "application/json",
+    },
+  };
+
   useEffect(() => {
     if (currentToken) {
       fetchOpenings();
@@ -80,6 +91,21 @@ const Browser = () => {
     setShowAllOpenings((prev) => !prev);
   };
 
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/opening/stats", config)
+      .then((response) => {
+
+        setStats(response.data);
+        let ids = response.data.map((item) => item.opening);
+        setIds(ids);
+      })
+      .catch((error) => {
+        console.error("Error fetching stats:", error);
+      });
+  }, [currentToken, currentOpening]);
+
+
   return (
     <form className="Browser">
       <div></div>
@@ -96,7 +122,9 @@ const Browser = () => {
       {filteredOpenings &&
         Object.entries(filteredOpenings)
           .sort(([idA], [idB]) => idA.localeCompare(idB))
-          .map(([id, opening]) => (
+          .map(([id, opening]) => {
+            const openingStats = stats?.find((stat) => stat.opening === Number(id));
+            return (
             <Opening
               key={id}
               id={id}
@@ -107,8 +135,10 @@ const Browser = () => {
               deleteOpening={() => handleDelete(id)}
               subscribeOpening={() => handleSubscribe(id)}
               unsubscribeOpening={() => handleUnsubscribe(id)}
+              stats={openingStats}
             />
-          ))}
+          );
+      })}
     </form>
   );
 };
