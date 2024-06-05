@@ -138,6 +138,10 @@ const Pieces = ({ initializeGameState }) => {
    */
   async function getCorrectMove(jsonData, humanMove = true) {
     let sequence = await fetchSequence(currentOpening);
+    if (!sequence) {
+      console.error("Sequence is undefined");
+      return null;
+    }
     console.log("SEQUENCi ");
     console.log(humanMove);
     console.log(sequence);
@@ -264,15 +268,13 @@ const Pieces = ({ initializeGameState }) => {
     if (!validateMove(from, to, correctMove)) {
       setMistakes(mistakes + 1);
 
-      if (mistakes === 0) {
-        axios
-          .put("http://localhost:8080/game/mistake", {}, config)
-          .then((response) => {
-            console.log("MISTAKE", response.data);
-          })
-          .catch(console.error);
-        setOpeningSuccess(false);
-      }
+      axios
+        .put("http://localhost:8080/game/mistake", {}, config)
+        .then((response) => {
+          console.log("MISTAKE", response.data);
+        })
+        .catch(console.error);
+      setOpeningSuccess(false);
 
       return;
     }
@@ -287,10 +289,15 @@ const Pieces = ({ initializeGameState }) => {
   };
 
   const validateMove = (from, to, correctMove) => {
-    if (from === correctMove[0] && to === correctMove[1]) {
-      return true;
+    console.log("hi");
+    try {
+      if (from === correctMove[0] && to === correctMove[1]) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      return false;
     }
-    return false;
   };
 
   const onDrop = async (e) => {
@@ -310,23 +317,18 @@ const Pieces = ({ initializeGameState }) => {
     }
 
     ({ newPosition, from, to } = result);
-    console.log("NEW POSITIONi");
-    console.log(newPosition);
-
-    console.log("opening");
-    console.log(currentOpening);
 
     axios
       .put(`http://localhost:8080/game/${from}-${to}`, {}, config)
       .then(async (response) => {
         {
           setResponseData(response.data);
-          if (response.data.winner == "Player") {
+          console.log("skibidis");
+          console.log(response.data);
+          if (response.data.nextMove == "") {
             setIsSequenceEnded(true);
             setOpeningSuccess(true);
             finishEarly = true;
-            dispatch({ type: "NEW_MOVE", payload: { newPosition: newPosition } });
-            return;
           }
           setNextMove(response.data.nextMove);
 
