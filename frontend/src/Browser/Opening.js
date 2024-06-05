@@ -1,21 +1,26 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faTrash,
-  faCircleInfo,
-  faCirclePlay,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCircleInfo, faCirclePlay } from "@fortawesome/free-solid-svg-icons";
 import { Unstable_Popup as BasePopup } from "@mui/base/Unstable_Popup";
 import { styled } from "@mui/system";
 import { ClickAwayListener } from "@mui/base/ClickAwayListener";
 import { useState } from "react";
 import { useOpening } from "./../contexts/OpeningContext";
-import axios from "axios";
-import { useEffect } from "react";
 import { useToken } from "./../contexts/TokenContext";
 import OpeningStats from "../components/OpeningStats/OpeningStats";
 
+const Opening = ({
+  name,
+  id,
+  moves,
+  description,
+  deleteOpening,
+  subscribeOpening,
+  unsubscribeOpening,
+  isUserOpening,
+  stats
+}) => {
 
-const Opening = ({ name, id, moves, description, deleteOpening, stats }) => {
+
   const [anchor, setAnchor] = useState(null);
 
   const { playOpening } = useOpening();
@@ -43,8 +48,26 @@ const Opening = ({ name, id, moves, description, deleteOpening, stats }) => {
               await playOpening({ id, name, moves, description })
             }
           />
-          <FontAwesomeIcon icon={faTrash} onClick={() => deleteOpening(id)} />
           <FontAwesomeIcon icon={faCircleInfo} onClick={handleClick} />
+          {isUserOpening ? (
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                unsubscribeOpening(id);
+              }}
+            >
+              unsub
+            </button>
+          ) : (
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                subscribeOpening(id);
+              }}
+            >
+              sub
+            </button>
+          )}
           {open && (
             <BasePopup id={id} open={open} anchor={anchor}>
               <PopupBody>{description}</PopupBody>

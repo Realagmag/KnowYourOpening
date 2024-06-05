@@ -7,6 +7,8 @@ const AddOpening = ({ setShowAddOpening, onAdd }) => {
   const [openingName, setOpeningName] = useState("");
   const [moves, setMoves] = useState("");
   const [description, setDescription] = useState("");
+  const [isWhite, setIsWhite] = useState(true);
+  const [error, setError] = useState(null);
   const { currentToken } = useToken();
 
   const handleInputChange = (event) => {
@@ -21,26 +23,45 @@ const AddOpening = ({ setShowAddOpening, onAdd }) => {
     setDescription(event.target.value);
   };
 
+  const handleToggleColor = () => {
+    setIsWhite((prev) => !prev);
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const newOpening = await PublishOpening(openingName, moves, description, currentToken);
-    console.log(`Adding opening: ${openingName}`);
-    console.log(`Moves: ${moves}`);
-    console.log(`Description: ${description}`);
-    setOpeningName("");
-    setMoves("");
-    setDescription("");
-    onAdd(newOpening);
-    setShowAddOpening(false);
+    try {
+      const newOpening = await PublishOpening(
+        openingName,
+        moves,
+        description,
+        isWhite,
+        currentToken
+      );
+      console.log(`Adding opening: ${openingName}`);
+      console.log(`Moves: ${moves}`);
+      console.log(`Description: ${description}`);
+      setOpeningName("");
+      setMoves("");
+      setDescription("");
+      onAdd(newOpening);
+      setShowAddOpening(false);
+      setError(null);
+    } catch (error) {
+      console.error("Error publishing opening:", error);
+      setError("Incorrect sequence");
+    }
   };
+
   const handleCancel = (e) => {
     e.preventDefault();
     onAdd();
     setShowAddOpening(false);
+    setError(null);
   };
 
   return (
     <div className="AddOpening">
+      {error && <p className="error">{error}</p>}{" "}
       <form>
         <div className="form-group">
           <label htmlFor="openingName">Opening Name:</label>
@@ -70,6 +91,30 @@ const AddOpening = ({ setShowAddOpening, onAdd }) => {
             value={description}
             onChange={handleDescriptionChange}
           />
+        </div>
+
+        <div className="form-group color-toggle">
+          <label htmlFor="color">Color:</label>
+          <div>
+            <label htmlFor="white">White</label>
+            <input
+              type="radio"
+              id="white"
+              name="color"
+              checked={isWhite}
+              onChange={handleToggleColor}
+            />
+          </div>
+          <div>
+            <label htmlFor="black">Black</label>
+            <input
+              type="radio"
+              id="black"
+              name="color"
+              checked={!isWhite}
+              onChange={handleToggleColor}
+            />
+          </div>
         </div>
 
         <div className="buttons">

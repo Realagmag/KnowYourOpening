@@ -5,6 +5,7 @@ import Search from "./Search";
 import { getOpenings, deleteOpening } from "./BackendCom";
 import AddBtn from "./AddBtn";
 import { useToken } from "./../contexts/TokenContext";
+import { subscribeOpening, unsubscribeOpening } from "./BackendCom";
 import { useOpening } from "../contexts/OpeningContext";
 import axios from "axios";
 
@@ -12,6 +13,7 @@ const Browser = () => {
   const [openings, setOpenings] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [showSearch, setShowSearch] = useState(true);
+  const [showAllOpenings, setShowAllOpenings] = useState(true);
   const { currentToken } = useToken();
   const [stats, setStats] = useState(null);
   const [ids, setIds] = useState(null);
@@ -29,18 +31,36 @@ const Browser = () => {
     }
   };
 
+  const handleSubscribe = async (id) => {
+    try {
+      await subscribeOpening(id, currentToken);
+      setTimeout(fetchOpenings, 50);
+    } catch (error) {
+      console.error("Error subscribing opening:", error);
+    }
+  };
+
+  const handleUnsubscribe = async (id) => {
+    try {
+      await unsubscribeOpening(id, currentToken);
+      setTimeout(fetchOpenings, 50);
+    } catch (error) {
+      console.error("Error unsubscribing opening:", error);
+    }
+  };
+
   const handleSearch = (searchTerm) => {
     setSearchTerm(searchTerm);
   };
 
   const fetchOpenings = useCallback(async () => {
     try {
-      const response = await getOpenings(currentToken);
+      const response = await getOpenings(currentToken, showAllOpenings);
       setOpenings(response);
     } catch (error) {
       console.error("Error fetching openings:", error);
     }
-  }, [currentToken]);
+  }, [currentToken, showAllOpenings]);
 
   const config = {
     headers: {
@@ -66,6 +86,11 @@ const Browser = () => {
       return obj;
     }, {});
 
+  const userOpenings = (e) => {
+    e.preventDefault();
+    setShowAllOpenings((prev) => !prev);
+  };
+
   useEffect(() => {
     axios
       .get("http://localhost:8080/opening/stats", config)
@@ -83,29 +108,36 @@ const Browser = () => {
 
   return (
     <form className="Browser">
+      <div></div>
       <Search onSearch={handleSearch} showSearch={showSearch} />
       <AddBtn
         onAdd={() => {
           setTimeout(fetchOpenings, 50);
           toggleSearch();
         }}
-      />
-  {filteredOpenings &&
-    Object.entries(filteredOpenings)
-      .sort(([idA], [idB]) => idA.localeCompare(idB))
-      .map(([id, opening]) => {
-        const openingStats = stats?.find((stat) => stat.opening === Number(id));
-        return (
-          <Opening
-            key={id}
-            id={id}
-            name={opening.name}
-            moves={opening.moves}
-            description={opening.description}
-            deleteOpening={() => handleDelete(id)}
-            stats={openingStats}
-          />
-        );
+      />{" "}
+      <button onClick={userOpenings}>
+        {showAllOpenings ? "Show All Openings" : "Show My Openings"}
+      </button>
+      {filteredOpenings &&
+        Object.entries(filteredOpenings)
+          .sort(([idA], [idB]) => idA.localeCompare(idB))
+          .map(([id, opening]) => {
+            const openingStats = stats?.find((stat) => stat.opening === Number(id));
+            return (
+            <Opening
+              key={id}
+              id={id}
+              name={opening.name}
+              moves={opening.moves}
+              description={opening.description}
+              isUserOpening={showAllOpenings}
+              deleteOpening={() => handleDelete(id)}
+              subscribeOpening={() => handleSubscribe(id)}
+              unsubscribeOpening={() => handleUnsubscribe(id)}
+              stats={openingStats}
+            />
+          );
       })}
     </form>
   );
