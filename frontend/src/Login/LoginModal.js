@@ -33,7 +33,7 @@ const LoginModal = ({ isOpen, onClose }) => {
       setPassword("");
       onClose();
     } catch (err) {
-      setError("Login failed. Please check your credentials.");
+      setError(err.response.data.message);
       setSuccess(null);
       console.error(err);
     }
@@ -52,7 +52,7 @@ const LoginModal = ({ isOpen, onClose }) => {
       setPassword("");
       setMode("login");
     } catch (err) {
-      setError(err.response);
+      setError(err.response.data);
       setSuccess(null);
       console.error(err);
     }
