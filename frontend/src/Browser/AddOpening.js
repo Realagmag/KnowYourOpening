@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { PublishOpening } from "./BackendCom";
 import { useToken } from "./../contexts/TokenContext";
 import "./Browser.css";
+import "./AddOpening.css"
 
 const AddOpening = ({ setShowAddOpening, onAdd }) => {
   const [openingName, setOpeningName] = useState("");
