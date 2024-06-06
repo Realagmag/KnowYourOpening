@@ -56,6 +56,8 @@ const Browser = () => {
   const fetchOpenings = useCallback(async () => {
     try {
       const response = await getOpenings(currentToken, showAllOpenings);
+      console.log("sk")
+      console.log(response)
       setOpenings(response);
     } catch (error) {
       console.error("Error fetching openings:", error);
@@ -136,6 +138,7 @@ const Browser = () => {
               subscribeOpening={() => handleSubscribe(id)}
               unsubscribeOpening={() => handleUnsubscribe(id)}
               stats={openingStats}
+              player={opening.player}
             />
           );
       })}

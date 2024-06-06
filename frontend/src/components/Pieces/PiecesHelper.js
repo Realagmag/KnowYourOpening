@@ -79,6 +79,23 @@ export function generatePossibleMoves(startingSquare) {
   }
 }
 
+export function handleFirstMove (moves, pos) {
+  let from = moves[0]
+  let to = moves[1]
+
+  let rank = from.charCodeAt(0) - 97;
+  let file = from[1] - 1;
+
+  let x = to.charCodeAt(0) - 97;
+  let y = to[1] - 1;
+
+  const p = pos[file][rank];
+  console.log(p);
+  pos[file][rank] = "";
+  pos[y][x] = p;
+  return pos
+}
+
 export function getDefaultPosition() {
   return [
     ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"],

@@ -17,12 +17,14 @@ export async function getOpenings(token, allOpenings) {
     .get(`http://localhost:8080/opening${allOpenings ? "/user" : ""}`, config)
     .then((response) => {
       const openings = {};
-
+      console.log("dta")
+      console.log(response.data[0])
       response.data.forEach((el) => {
         openings[el.id] = {
           name: el.name,
           description: el.description,
           moves: el.moveSequence,
+          player: el.playerSide
         };
       });
       return openings;

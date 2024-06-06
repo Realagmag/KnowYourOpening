@@ -17,7 +17,8 @@ const Opening = ({
   subscribeOpening,
   unsubscribeOpening,
   isUserOpening,
-  stats
+  stats,
+  player
 }) => {
 
 
@@ -45,7 +46,7 @@ const Opening = ({
           <FontAwesomeIcon
             icon={faCirclePlay}
             onClick={async () =>
-              await playOpening({ id, name, moves, description })
+              await playOpening({ id, name, moves, description, player })
             }
           />
           <FontAwesomeIcon icon={faCircleInfo} onClick={handleClick} />

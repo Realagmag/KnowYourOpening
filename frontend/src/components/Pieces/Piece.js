@@ -2,8 +2,8 @@ import "./Pieces.css";
 import { generatePossibleMoves } from "./PiecesHelper";
 
 const pieceColorMap = {
-  w: "White",
-  b: "Black",
+  w: "white",
+  b: "black",
 };
 
 export const getLegalMoves = (rank, file, gameState, perspective) => {
@@ -26,15 +26,19 @@ export const getLegalMoves = (rank, file, gameState, perspective) => {
 };
 
 const isDraggable = (piece, gameState) => {
+  console.log("gamstate")
+  console.log(gameState)
   let pieceToMove = pieceColorMap[piece[0]];
-  if (!gameState) {
-    if (pieceToMove === "White") {
+
+  try {
+    if (pieceToMove === gameState.opening.playerSide) {
       return true;
     }
     return false;
+  } catch (error) {
+    console.log(error)
+    return false
   }
-
-  return gameState.onMove === pieceColorMap[piece[0]];
 };
 
 

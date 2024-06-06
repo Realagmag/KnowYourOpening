@@ -6,7 +6,7 @@ import { useAppContext } from "../../contexts/Context";
 import { makeNewMove } from "../../reducer/actions/move";
 import axios from "axios";
 import { getLegalMoves } from "./Piece";
-import { getCorrectMove, generateStartingPossibleMoves } from "./PiecesHelper";
+import { getCorrectMove, generateStartingPossibleMoves, handleFirstMove } from "./PiecesHelper";
 import { faThermometerThreeQuarters } from "@fortawesome/free-solid-svg-icons";
 import { useContext } from "react";
 import { NotificationContext } from "../../contexts/NotificationContext";
@@ -14,6 +14,7 @@ import { useOpening } from "../../contexts/OpeningContext";
 import { usePerspective } from "../../contexts/PerspectiveContext";
 import { useToken } from "./../../contexts/TokenContext";
 import { getDefaultPosition } from "./PiecesHelper";
+
 
 const Pieces = ({ initializeGameState }) => {
   const ref = useRef();
@@ -40,13 +41,15 @@ const Pieces = ({ initializeGameState }) => {
     }
   }, [currentOpening]);
 
-  console.log(responseData);
   const config = {
     headers: {
       Authorization: `Bearer ${currentToken}`,
       "Content-Type": "application/json",
     },
   };
+
+  console.log("OPENING");
+  console.log(currentOpening);
 
   useEffect(() => {
     if (openingSuccess) {
@@ -60,6 +63,22 @@ const Pieces = ({ initializeGameState }) => {
       }, 1000);
     }
   }, [openingSuccess]);
+
+  useEffect(() => {
+    if (currentOpening) {
+      setPerspective(currentOpening.player === "white" ? "white" : "black");
+      if (currentOpening.player === "black") {
+        console.log("crac")
+        let moves = currentOpening.moves.split("-").map(move => move.slice(0, 2));
+
+        console.log(moves)
+        let newPos = handleFirstMove(moves, defaultPosition);
+        dispatch({ type: "NEW_MOVE", payload: { newPosition: newPos } });
+        return;
+
+      }
+    }
+  }, [currentOpening]);
 
   let currentPosition = null;
   if (appState.position && !firstLoading) {
@@ -129,13 +148,6 @@ const Pieces = ({ initializeGameState }) => {
     }
   }
 
-  let counter = 0;
-  /**
-   * Retrieves the correct move based on the provided JSON data and human move flag.
-   * @param {Object} jsonData - The JSON data containing the sequence of moves.
-   * @param {boolean} [humanMove=true] - Flag indicating whether the move is made by a human player.
-   * @returns {Array} - The correct move as an array of two elements representing the source and destination squares.
-   */
   async function getCorrectMove(jsonData, humanMove = true) {
     let sequence = await fetchSequence(currentOpening);
     if (!sequence) {
@@ -169,7 +181,7 @@ const Pieces = ({ initializeGameState }) => {
 
       if (humanMove) {
         console.log("HUMAN MOVE");
-        console.log(nextMove);
+        console.log(jsonData);
         let moveToMake = nextMove.split("-");
         console.log(moveToMake);
 
@@ -204,6 +216,8 @@ const Pieces = ({ initializeGameState }) => {
     if (finishEarly) {
       return position;
     }
+    console.log("dta");
+    console.log(data);
     let newPos = JSON.parse(JSON.stringify(position));
     const computerMove = await getCorrectMove(data, false, currentToken);
 
@@ -221,7 +235,6 @@ const Pieces = ({ initializeGameState }) => {
 
     console.log(newPos);
     const p = newPos[file][rank];
-    console.log("PIECE");
     console.log(p);
     newPos[file][rank] = "";
     newPos[y][x] = p;
@@ -263,8 +276,8 @@ const Pieces = ({ initializeGameState }) => {
     position[newRank][newFile] = "";
 
     const correctMove = await getCorrectMove(responseData, true);
-    console.log("CORRECT MOVEwork");
-    console.log(correctMove);
+    console.log("crct")
+    console.log(correctMove)
     if (!validateMove(from, to, correctMove)) {
       setMistakes(mistakes + 1);
 
@@ -302,8 +315,7 @@ const Pieces = ({ initializeGameState }) => {
 
   const onDrop = async (e) => {
     e.preventDefault();
-    console.log("CURRENT POSITION 2");
-    console.log(currentPosition);
+
     let newPosition = JSON.parse(JSON.stringify(currentPosition));
     let from = "";
     let to = "";
@@ -323,8 +335,6 @@ const Pieces = ({ initializeGameState }) => {
       .then(async (response) => {
         {
           setResponseData(response.data);
-          console.log("skibidis");
-          console.log(response.data);
           if (response.data.nextMove == "") {
             setIsSequenceEnded(true);
             setOpeningSuccess(true);
@@ -337,7 +347,8 @@ const Pieces = ({ initializeGameState }) => {
             newPosition,
             finishEarly
           );
-
+          console.log("newpos");
+          console.log(newPos);
           dispatch({ type: "NEW_MOVE", payload: { newPosition: newPos } });
         }
       });
