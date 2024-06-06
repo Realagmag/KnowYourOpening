@@ -151,6 +151,10 @@ public class GameService {
     public Game playerMadeMistake() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Game game = userGames.get(username);
+        if (game.isMadeMistake())
+        {
+            return game;
+        }
         game.setMadeMistake(true);
 
         //increment incorrect and update lastTrained
