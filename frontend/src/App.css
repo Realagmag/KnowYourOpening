@@ -9,9 +9,9 @@ body {
 
 .App {
   position: relative;
-  display: flex; /* Change from grid to flex */
-  justify-content: center; /* Center the content horizontally */
-  align-items: center; /* Center the content vertically */
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 100vh;
   background: var(--bg-color);
   font-family: "Sofia Sans", sans-serif;
@@ -27,14 +27,12 @@ body {
 }
 
 .browseButton {
-  position: absolute; /* or 'relative', 'fixed', 'sticky' depending on your needs */
-  top: 20px; /* adjust as needed */
-  right: 20px; /* adjust as needed */
-  /* existing styles... */
+  position: absolute;
+  top: 20px;
+  right: 20px;
   margin: 10px;
 }
 
 .board {
-  position: relative; /* Add this */
-  /* other styles... */
+  position: relative; 
 }

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useOpening } from '../../contexts/OpeningContext';
+import { useOpening } from "../../contexts/OpeningContext";
 
 let sequence = null;
 
@@ -79,10 +79,9 @@ export function generatePossibleMoves(startingSquare) {
   }
 }
 
-export function handleFirstMove (moves, pos) {
-
-  let from = moves[0]
-  let to = moves[1]
+export function handleFirstMove(moves, pos) {
+  let from = moves[0];
+  let to = moves[1];
 
   let rank = from.charCodeAt(0) - 97;
   let file = from[1] - 1;
@@ -94,7 +93,7 @@ export function handleFirstMove (moves, pos) {
   console.log(p);
   pos[file][rank] = "";
   pos[y][x] = p;
-  return pos
+  return pos;
 }
 
 export function getDefaultPosition() {

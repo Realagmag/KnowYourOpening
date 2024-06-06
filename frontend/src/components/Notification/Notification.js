@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
-import { NotificationContext } from "../../contexts/NotificationContext"; // adjust the path as needed
-import "./Notification.css"; // import the CSS file, adjust the path as needed
+import { NotificationContext } from "../../contexts/NotificationContext";
+import "./Notification.css";
 
 const Notification = () => {
   const { notification } = useContext(NotificationContext);

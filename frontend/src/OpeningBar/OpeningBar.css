@@ -37,5 +37,5 @@
 
 .OpeningBar button:hover {
   background-color: #316d33;
-  transform: scale(1.05); /* Increase size to 120% */
+  transform: scale(1.05); 
 }

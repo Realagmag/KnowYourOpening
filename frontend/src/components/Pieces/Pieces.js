@@ -67,13 +67,6 @@ const Pieces = ({ initializeGameState }) => {
   useEffect(() => {
     if (currentOpening) {
       setPerspective(currentOpening.player === "white" ? "white" : "black");
-      if (currentOpening.player === "black") {
-
-          // let moves = currentOpening.moves.split("-").map(move => move.slice(0, 2));
-          // let newPos = handleFirstMove(moves, defaultPosition);
-          // dispatch({ type: "NEW_MOVE", payload: { newPosition: newPos } });
-
-      }
     }
   }, [currentOpening]);
 
@@ -87,7 +80,7 @@ const Pieces = ({ initializeGameState }) => {
     currentPosition = defaultPosition;
     setFirstLoading(false);
   }
-  // setPerspective("white");
+
 
   async function handleButtonClick() {
     try {
@@ -244,8 +237,6 @@ const Pieces = ({ initializeGameState }) => {
     e.preventDefault();
     let [p, rank, file] = e.dataTransfer.getData("text").split(",");
     let { x, y } = calculateCoords(e);
-    // const from = `${String.fromCharCode(97 + Number(file))}${Number(rank) + 1}`;
-    // const to = `${String.fromCharCode(97 + y)}${x + 1}`;
     console.log(rank, file, x, y);
     let { from, to, newRank, newFile, newX, newY } = getFromTo(
       file,
