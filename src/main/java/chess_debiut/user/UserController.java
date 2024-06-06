@@ -31,7 +31,6 @@ public class UserController {
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
-        System.out.println("I passed through filters");   // debug
         Authentication authentication;
         try {
             authentication = authenticationManager
@@ -43,14 +42,10 @@ public class UserController {
             map.put("status", false);
             return new ResponseEntity<Object>(map, HttpStatus.NOT_FOUND);
         }
-        System.out.println("Past authentication");    // debug
         SecurityContextHolder.getContext().setAuthentication(authentication);
         User userDetails = (User) authentication.getPrincipal();
         String jwtToken = jwtUtils.generateTokenFromUsername(userDetails);
-//        List<String> roles = userDetails.getAuthorities().stream()
-//                .map(item -> item.getAuthority())
-//                .collect(Collectors.toList());
-        List<String> roles = new ArrayList<>(); // to do
+        List<String> roles = new ArrayList<>();
         LoginResponse response = new LoginResponse(jwtToken, userDetails.getUsername(), roles);
         return ResponseEntity.ok(response);
     }

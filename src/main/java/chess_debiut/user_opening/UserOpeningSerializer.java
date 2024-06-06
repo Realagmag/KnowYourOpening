@@ -1,13 +1,11 @@
 package chess_debiut.user_opening;
 
-import chess_debiut.opening.Opening;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
 public class UserOpeningSerializer extends JsonSerializer<UserOpening> {

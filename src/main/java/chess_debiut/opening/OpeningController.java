@@ -1,11 +1,6 @@
 package chess_debiut.opening;
 
-import chess_debiut.user.User;
-import chess_debiut.user_opening.UserOpening;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
