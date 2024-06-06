@@ -11,9 +11,9 @@ sudo chmod -R o+w frontend
 # sudo apt install dbus-x11
 # sudo apt -y upgrade
 
-# cd frontend
-# npm install react react-dom
-# cd ..
+ cd frontend
+ npm install react react-dom
+ cd ..
 
 # sudo -u postgres psql << EOF
 # CREATE DATABASE opening;
