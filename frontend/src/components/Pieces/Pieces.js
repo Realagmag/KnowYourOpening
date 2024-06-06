@@ -6,7 +6,11 @@ import { useAppContext } from "../../contexts/Context";
 import { makeNewMove } from "../../reducer/actions/move";
 import axios from "axios";
 import { getLegalMoves } from "./Piece";
-import { getCorrectMove, generateStartingPossibleMoves, handleFirstMove } from "./PiecesHelper";
+import {
+  getCorrectMove,
+  generateStartingPossibleMoves,
+  handleFirstMove,
+} from "./PiecesHelper";
 import { faThermometerThreeQuarters } from "@fortawesome/free-solid-svg-icons";
 import { useContext } from "react";
 import { NotificationContext } from "../../contexts/NotificationContext";
@@ -14,7 +18,6 @@ import { useOpening } from "../../contexts/OpeningContext";
 import { usePerspective } from "../../contexts/PerspectiveContext";
 import { useToken } from "./../../contexts/TokenContext";
 import { getDefaultPosition } from "./PiecesHelper";
-
 
 const Pieces = ({ initializeGameState }) => {
   const ref = useRef();
@@ -60,7 +63,7 @@ const Pieces = ({ initializeGameState }) => {
       setTimeout(() => {
         handleButtonClick();
         setOpeningSuccess(false);
-      }, 1000);
+      }, 500);
     }
   }, [openingSuccess]);
 
@@ -81,15 +84,15 @@ const Pieces = ({ initializeGameState }) => {
     setFirstLoading(false);
   }
 
-
   async function handleButtonClick() {
     try {
       initializeGameState(false);
-      if (currentOpening.player === "black"){
-        let moves = currentOpening.moves.split("-").map(move => move.slice(0, 2));
+      if (currentOpening.player === "black") {
+        let moves = currentOpening.moves
+          .split("-")
+          .map((move) => move.slice(0, 2));
         let newPos = handleFirstMove(moves, defaultPosition);
         dispatch({ type: "NEW_MOVE", payload: { newPosition: newPos } });
-
       }
       let openingId = currentOpening.id;
       currentPosition = defaultPosition;
@@ -265,8 +268,14 @@ const Pieces = ({ initializeGameState }) => {
     position[newRank][newFile] = "";
 
     const correctMove = await getCorrectMove(responseData, true);
-    console.log("crct")
-    console.log(correctMove)
+    console.log("crct");
+    console.log(correctMove);
+    console.log(from);
+    console.log(to);
+    if (from === to) {
+      return 1;
+    }
+
     if (!validateMove(from, to, correctMove)) {
       setMistakes(mistakes + 1);
 
@@ -312,6 +321,8 @@ const Pieces = ({ initializeGameState }) => {
     const result = await makeMove(e, newPosition);
     if (!result) {
       setNotification({ type: "error", message: "Incorrect move" });
+      return;
+    } else if (result == 1) {
       return;
     } else {
       setNotification({ type: "success", message: "Correct move" });

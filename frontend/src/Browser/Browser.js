@@ -7,6 +7,7 @@ import AddBtn from "./AddBtn";
 import { useToken } from "./../contexts/TokenContext";
 import { subscribeOpening, unsubscribeOpening } from "./BackendCom";
 import { useOpening } from "../contexts/OpeningContext";
+import { useAppContext } from "../contexts/Context";
 import axios from "axios";
 
 const Browser = () => {
@@ -18,6 +19,7 @@ const Browser = () => {
   const [stats, setStats] = useState(null);
   const [ids, setIds] = useState(null);
   const { currentOpening } = useOpening();
+  const { appState, dispatch } = useAppContext();
   const toggleSearch = () => {
     setShowSearch((prev) => !prev);
   };
@@ -96,6 +98,7 @@ const Browser = () => {
   useEffect(() => {
     axios
       .get("http://localhost:8080/opening/stats", config)
+
       .then((response) => {
 
         setStats(response.data);
@@ -105,7 +108,7 @@ const Browser = () => {
       .catch((error) => {
         console.error("Error fetching stats:", error);
       });
-  }, [currentToken, currentOpening]);
+  }, [currentToken, currentOpening, appState]);
 
 
   return (

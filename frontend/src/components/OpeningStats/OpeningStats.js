@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { config } from "@fortawesome/fontawesome-svg-core";
+
+
 const OpeningStats = ({ stats, id }) => {
 
 
