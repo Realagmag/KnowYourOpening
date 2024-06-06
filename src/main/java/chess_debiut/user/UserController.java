@@ -2,6 +2,9 @@ package chess_debiut.user;
 
 import chess_debiut.jwt.JwtUtils;
 import chess_debiut.opening.Opening;
+import chess_debiut.opening.OpeningRepository;
+import chess_debiut.user_opening.UserOpening;
+import chess_debiut.user_opening.UserOpeningRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,16 +21,16 @@ import java.util.stream.Collectors;
 
 @RestController
 public class UserController {
-
     @Autowired
     private AuthenticationManager authenticationManager;
-
     @Autowired
     private JwtUtils jwtUtils;
-
     @Autowired
     private UserRepository userRepository;
-
+    @Autowired
+    private OpeningRepository openingRepository;
+    @Autowired
+    private UserOpeningRepository userOpeningRepository;
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
@@ -58,6 +61,14 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("That username is taken.");
         }
         userRepository.save(user);
+        List<String> basicOpenings = Arrays.asList("*Ruy Lopez*", "*Sicilian Defense*", "*French Defense*", "*Caro-Kann Defense*");
+        for (String opening: basicOpenings) {
+            Opening newOpening = openingRepository.getOpeningByName(opening);
+            UserOpening userOpening = new UserOpening();
+            userOpening.setUser(user);
+            userOpening.setOpening(newOpening);
+            userOpeningRepository.save(userOpening);
+        }
         return ResponseEntity.status(HttpStatus.CREATED).body("Successful registration!");
     }
 

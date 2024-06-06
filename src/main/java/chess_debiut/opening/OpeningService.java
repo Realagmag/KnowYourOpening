@@ -135,6 +135,10 @@ public class OpeningService {
                     "Opening with id " + openingId + " does not exist.");
         }
         Opening opening = openingRepository.findOpeningById(openingId).get();
+        Optional<UserOpening> optional = userOpeningRepository.findByUserAndOpening(currentUser, opening);
+        if (optional.isPresent()){
+            return;
+        }
         UserOpening userOpening = new UserOpening();
         userOpening.setUser(currentUser);
         userOpening.setOpening(opening);

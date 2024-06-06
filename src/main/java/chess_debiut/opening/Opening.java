@@ -33,7 +33,7 @@ public class Opening {
     String playerSide;
     LocalDate creationDate;
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = true)
     private User createdBy;
 
     @OneToMany(mappedBy = "opening", cascade = CascadeType.ALL, orphanRemoval = true)
