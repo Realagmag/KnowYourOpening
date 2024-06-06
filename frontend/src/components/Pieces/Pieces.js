@@ -68,13 +68,10 @@ const Pieces = ({ initializeGameState }) => {
     if (currentOpening) {
       setPerspective(currentOpening.player === "white" ? "white" : "black");
       if (currentOpening.player === "black") {
-        console.log("crac")
-        let moves = currentOpening.moves.split("-").map(move => move.slice(0, 2));
 
-        console.log(moves)
-        let newPos = handleFirstMove(moves, defaultPosition);
-        dispatch({ type: "NEW_MOVE", payload: { newPosition: newPos } });
-        return;
+          // let moves = currentOpening.moves.split("-").map(move => move.slice(0, 2));
+          // let newPos = handleFirstMove(moves, defaultPosition);
+          // dispatch({ type: "NEW_MOVE", payload: { newPosition: newPos } });
 
       }
     }
@@ -95,6 +92,12 @@ const Pieces = ({ initializeGameState }) => {
   async function handleButtonClick() {
     try {
       initializeGameState(false);
+      if (currentOpening.player === "black"){
+        let moves = currentOpening.moves.split("-").map(move => move.slice(0, 2));
+        let newPos = handleFirstMove(moves, defaultPosition);
+        dispatch({ type: "NEW_MOVE", payload: { newPosition: newPos } });
+
+      }
       let openingId = currentOpening.id;
       currentPosition = defaultPosition;
       console.log("OPENING ID", openingId);
@@ -167,11 +170,6 @@ const Pieces = ({ initializeGameState }) => {
         .match(/.{5}/g)
         .map((move) => [move.slice(0, 2), move.slice(3)]);
 
-      console.log("MOVES");
-      console.log(moves);
-      console.log("ALL MOVES");
-      console.log(allMoves);
-
       let lastMove = allMoves[allMoves.length - 1];
       console.log("LAST MOVE");
       console.log(lastMove);
@@ -182,7 +180,7 @@ const Pieces = ({ initializeGameState }) => {
       if (humanMove) {
         console.log("HUMAN MOVE");
         console.log(jsonData);
-        let moveToMake = nextMove.split("-");
+        let moveToMake = jsonData.nextMove.split("-");
         console.log(moveToMake);
 
         if (moveToMake.length === 0) {

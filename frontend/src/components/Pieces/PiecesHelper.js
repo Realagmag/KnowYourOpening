@@ -80,6 +80,7 @@ export function generatePossibleMoves(startingSquare) {
 }
 
 export function handleFirstMove (moves, pos) {
+
   let from = moves[0]
   let to = moves[1]
 
