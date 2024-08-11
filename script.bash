@@ -1,25 +1,34 @@
 #!/bin/bash
 
-sudo chmod -R o+w frontend
+sudo chmod 777 .
 
-# sudo apt update
-# sudo apt -y install postgresql
-# sudo apt -y install openjdk-17-jdk
-# sudo apt -y install maven
-# sudo apt -y install nodejs
-# sudo apt -y install npm
-# sudo apt install dbus-x11
-# sudo apt -y upgrade
+current_dir=$(pwd)
+username=$(basename $(dirname "$current_dir"))
+home_dir="/home/$username"
+app_dir="$home_dir/pap_z11_szachy"
+
+sudo apt update
+sudo apt-get -y install postgresql
+sudo apt -y install openjdk-17-jdk
+sudo apt -y install maven
+sudo apt -y install nodejs
+sudo apt -y install npm
+sudo apt install dbus-x11
+sudo apt -y upgrade
 
  cd frontend
  npm install react react-dom
  cd ..
 
-# sudo -u postgres psql << EOF
-# CREATE DATABASE opening;
-# CREATE USER konrad WITH SUPERUSER;
-# ALTER USER konrad WITH PASSWORD 'konrad';
-# EOF
+cd ~postgres/
+
+sudo -u postgres psql << EOF
+CREATE DATABASE opening;
+CREATE USER konrad WITH SUPERUSER;
+ALTER USER konrad WITH PASSWORD 'konrad';
+EOF
+
+cd "$app_dir"
 
 mvn clean install
 
