@@ -10,7 +10,7 @@ Database: PostgreSQL
 Konrad Karpiuk, Miłosz Więcyk, Karol Korszun and Michał Kaniecki - students of Warsaw University of Technology.
 
 ## Usage Example
-[https://youtu.be/CR-00Q0mBJk?si=mXTy4MuYS6cm6gh9]
+https://youtu.be/CR-00Q0mBJk?si=mXTy4MuYS6cm6gh9
 
 ## Install and run
 On Linux Debian-based distributions:  
