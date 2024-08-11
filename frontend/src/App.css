@@ -8,9 +8,31 @@ body {
 }
 
 .App {
-  display: grid;
-  place-content: center;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 100vh;
   background: var(--bg-color);
   font-family: "Sofia Sans", sans-serif;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.browseButton {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  margin: 10px;
+}
+
+.board {
+  position: relative; 
 }

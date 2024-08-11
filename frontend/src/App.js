@@ -1,25 +1,38 @@
-import { useReducer } from "react";
+import { useState } from "react";
 import "./App.css";
 import Board from "./components/Board/Board";
-import AppContext from "./contexts/Context";
-import { reducer } from "./reducer/reducer";
+import { OpeningProvider } from "./contexts/OpeningContext";
+import BrowseBtn from "./Browser/BrowseBtn";
 import { initGameState } from "./constant";
+import Browser from "./Browser/Browser";
+import OpeningBar from "./OpeningBar/OpeningBar";
+import Notification from "./components/Notification/Notification";
+import { NotificationProvider } from "./contexts/NotificationContext";
+import LoginModal from "./Login/LoginModal";
+import { TokenProvider } from "./contexts/TokenContext";
+import AppContent from "./AppContent";
+import { PerspectiveProvider } from "./contexts/PerspectiveContext";
 
 function App() {
-  const [appState, dispatch] = useReducer(reducer, initGameState);
+  const [isLoginOpen, setIsLoginOpen] = useState(true);
 
-  const providerState = {
-    appState,
-    dispatch,
+  const closeLoginModal = () => {
+    setIsLoginOpen(false);
   };
 
   return (
-    <AppContext.Provider value={providerState}>
-      <div className="App">
-        <Board />
-      </div>
-    </AppContext.Provider>
+    <TokenProvider>
+      <OpeningProvider>
+        <NotificationProvider>
+          <PerspectiveProvider> {}
+            <div className="App">
+              <LoginModal isOpen={isLoginOpen} onClose={closeLoginModal} />
+              <AppContent />
+            </div>
+          </PerspectiveProvider>
+        </NotificationProvider>
+      </OpeningProvider>
+    </TokenProvider>
   );
-}
-
+};
 export default App;

@@ -16,9 +16,9 @@ sudo apt -y install npm
 sudo apt install dbus-x11
 sudo apt -y upgrade
 
-cd frontend
-npm install react react-dom
-cd ..
+ cd frontend
+ npm install react react-dom
+ cd ..
 
 cd ~postgres/
 
@@ -35,4 +35,6 @@ mvn clean install
 
 sudo gnome-terminal --tab --title="backend" -- bash -c "java -jar target/demo-0.0.1-SNAPSHOT.jar"
 
-sudo gnome-terminal --tab --title="frontend" -- bash -c "cd frontend && npm start" 
+sudo gnome-terminal --tab --title="frontend" -- bash -c "cd frontend && npm start"
+
+

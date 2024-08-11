@@ -1,6 +1,5 @@
-import { CreatePosition } from "./helper";
-
-export const initGameState = {
-  position: [await CreatePosition()],
+export const initGameState = (token) => ({
+  position: [],
   turn: "w",
-};
+  token,
+});

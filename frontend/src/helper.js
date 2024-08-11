@@ -2,13 +2,30 @@ import axios from "axios";
 
 export const getCharacter = (file) => String.fromCharCode(file + 96);
 
-export async function CreatePosition() {
-  const { data } = await axios.get("http://localhost:8080/game/new");
-  const pieces = processPiecesData(data.pieces);
-  return pieces;
+export function fetchGameState(token) {
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+
+  return axios.get("http://localhost:8080/game/new", config)
+    .then(response => {
+      const pieces = processPiecesData(response.data.pieces);
+      console.log("Pieces:", pieces)
+      return {
+        position: [pieces],
+        turn: "w",
+      };
+    })
+    .catch(error => {
+      console.error("Error fetching game state:", error);
+      throw error;
+    });
 }
 
-function processPiecesData(data) {
+
+
+
+export function processPiecesData(data) {
   const chessboard = new Array(8).fill("").map(() => new Array(8).fill(""));
 
   data.forEach((piece) => {
