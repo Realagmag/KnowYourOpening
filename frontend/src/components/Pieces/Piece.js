@@ -1,17 +1,82 @@
 import "./Pieces.css";
+import { generatePossibleMoves } from "./PiecesHelper";
 
-const Piece = ({ rank, file, piece }) => {
+const pieceColorMap = {
+  w: "white",
+  b: "black",
+};
+
+export const getLegalMoves = (rank, file, gameState, perspective) => {
+  if (perspective === "black") {
+    rank = 7 - rank;
+    file = 7 - file;
+  }
+  const from = `${String.fromCharCode(97 + Number(file))}${Number(rank) + 1}`;
+
+  try {
+
+    const pieceData = gameState.pieces.find((p) => p.position === from);
+
+    return pieceData.possibleMoves;
+  } catch (error) {
+    const pieceData = generatePossibleMoves(from);
+
+    return pieceData;
+  }
+};
+
+const isDraggable = (piece, gameState) => {
+  console.log("gamstate")
+  console.log(gameState)
+  let pieceToMove = pieceColorMap[piece[0]];
+
+  try {
+    if (pieceToMove === gameState.opening.playerSide) {
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.log(error)
+    return false
+  }
+};
+
+
+const Piece = ({ rank, file, piece, gameState, perspective }) => {
+
   const onDragStart = (e) => {
     e.dataTransfer.effectAllowed = "move";
     e.dataTransfer.setData("text/plain", `${piece},${rank},${file}`);
-    setTimeout(() => (e.target.style.display = "none"), 0);
+    try {
+      const legalMoves = getLegalMoves(rank, file, gameState, perspective);
+      console.log("Legal moves " + legalMoves);
+
+      legalMoves.forEach((move) => {
+        const square = document.querySelector(`.square-${move}`);
+
+        console.log(square);
+        if (square) {
+          square.classList.add("highlight");
+        }
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const onDragEnd = (e) => {
+    const highlightedSquares = document.querySelectorAll(".highlight");
+    highlightedSquares.forEach((square) => {
+      square.classList.remove("highlight");
+    });
   };
 
   return (
     <div
       className={`piece ${piece} p-${file}${rank}`}
-      draggable={true}
-      onDragStart={onDragStart}
+      draggable={isDraggable(piece, gameState)}
+      onDragStart={isDraggable(piece, gameState) ? onDragStart : null}
+      onDragEnd={isDraggable(piece, gameState) ? onDragEnd : null}
     />
   );
 };

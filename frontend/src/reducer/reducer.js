@@ -13,6 +13,19 @@ export const reducer = (state, action) => {
         position,
       };
     }
+    case 'FLIP_BOARD': {
+      const perspective = state.perspective === 'white' ? 'black' : 'white';
+      return {
+        ...state,
+        perspective,
+      };
+    }
+    case "INIT_GAME_STATE": {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    }
     default:
       return state;
   }
